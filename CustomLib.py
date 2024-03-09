@@ -5,7 +5,10 @@ def printInfo():
     print("Mouse position:",mouse.position)
 
 
-def createWallCube(pos, height=5):
-    Entity(model='cube', position=pos, collider='box', scale=(20, height, 20), texture='brick', color=color.gray)
+def createMyCube(x, z, width, mycolor) -> Entity:
+    return Entity(model='cube', position=(x,width/2,z), collider='box', scale=(width, width, width), texture='brick', color=mycolor)
 
-# create a value random a value between 10 and 80
+
+def createWall(x,z,width,height, mycolor=None, corner = 0) -> Entity:
+    return Entity(model='cube', position=(x,height/2,z), collider='box', scale=(width, height, 20), texture='brick', color=mycolor, rotation_y = corner)
+
