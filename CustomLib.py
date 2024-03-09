@@ -32,3 +32,12 @@ def createTree(x=0, z=0) -> Entity :
            color=color.rgb(1, 59, 14),
            scale=(40, 40, 40),
            )
+
+def createHouse(x=0,z=0, corner = 0) -> Entity:
+    return Entity(
+            model='asset/static/house/farmhouse.obj',
+            position = (x,1,z),
+            texture = 'asset/static/house/Farmhouse Texture.jpg',
+            scale = 10,
+            rotation_y=corner,
+        )
