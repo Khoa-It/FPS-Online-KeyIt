@@ -6,16 +6,17 @@ from CustomLib import *
 def input(key):
     global map, step
     if key == 'w':
-        map.listWallCube[0].z += step
+        map.creativeCube.z += step
     if key == 's':
-        map.listWallCube[0].z -= step
+        map.creativeCube.z -= step
     if key == 'a':
-        map.listWallCube[0].x -= step
+        map.creativeCube.x -= step
     if key == 'd':
-        map.listWallCube[0].x += step
+        map.creativeCube.x += step
     if key =='space':
-        print("cube:","{",f"'x':{map.listWallCube[0].x}, 'height':20, 'z':{map.listWallCube[0].z}, 'color':color.green","},")
-        print("wall:","{",f"'x':{map.listWallCube[0].x}, 'height':80, 'width':150, 'z':{map.listWallCube[0].z}, 'color':color.rgb(128, 49, 4), 'corner':0 ", "},")
+        print("cube:","{",f"'x':{map.creativeCube.x}, 'height':20, 'z':{map.creativeCube.z}, 'color':color.green","},")
+        print("wall:","{",f"'x':{map.creativeCube.x}, 'height':80, 'width':150, 'z':{map.creativeCube.z}, 'color':color.rgb(128, 49, 4), 'corner':0 ", "},")
+        print("tree:", "{",f"'x':{map.creativeCube.x}, 'z':{map.creativeCube.z}", "},")
     
 
 
