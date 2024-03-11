@@ -35,6 +35,10 @@ from CustomLib import *
 #               )
 
 
+def input(key):
+    if key == 'q':
+        app.quit()
+
 app = Ursina()
 Sky()
 map = Map()
