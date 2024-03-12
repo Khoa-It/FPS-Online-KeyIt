@@ -36,8 +36,18 @@ from CustomLib import *
 
 
 def input(key):
+    global player
     if key == 'q':
         app.quit()
+    if held_keys['shift']:
+        player.speed=400
+    if not held_keys['shift']:
+        player.speed=200
+    if held_keys['c']:
+        camera.y = 20
+        player.speed=50
+    if not held_keys['c']:
+        camera.y = 50
 
 app = Ursina()
 Sky()
