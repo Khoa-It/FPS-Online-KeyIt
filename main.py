@@ -48,6 +48,13 @@ def input(key):
         player.speed=50
     if not held_keys['c']:
         camera.y = 50
+    if key=='space':
+        player.jump_height = 40
+        player.jump_up_duration=0.25
+        player.fall_after=0.2
+        player.gravity = 9.8
+        player.jump()
+
 
 app = Ursina()
 Sky()
