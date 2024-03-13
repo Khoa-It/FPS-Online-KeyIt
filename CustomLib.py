@@ -31,6 +31,7 @@ def createTree(x=0, z=0) -> Entity:
                   position=(x, 1, z), colider='box',
                   color=color.rgb(1, 59, 14),
                   scale=(40, 40, 40),
+                  collider='box',
                   )
 
 
@@ -41,4 +42,5 @@ def createHouse(x=0, z=0, corner=0) -> Entity:
         texture='asset/static/house/Farmhouse Texture.jpg',
         scale=10,
         rotation_y=corner,
+        collider='box',
     )

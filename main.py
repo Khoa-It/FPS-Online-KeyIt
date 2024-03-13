@@ -3,6 +3,8 @@ from ursina.prefabs.first_person_controller import FirstPersonController
 
 from Map import Map
 from CustomLib import *
+from Bullet import Bullet 
+from ursina import time  
 
 # def input(key):
 #     global map, step
@@ -54,7 +56,19 @@ def input(key):
         player.fall_after=0.2
         player.gravity = 9.8
         player.jump()
+    if key == 'left mouse down':
+        shoot_bullet()
 
+def update():
+    global bullet
+    if bullet:
+        bullet.update()  # Cập nhật vị trí của viên đạn
+        
+def shoot_bullet():
+    global bullet
+    print("Shooting bullet!")  
+    bullet = Bullet(position=gun.world_position + (gun.forward * 1.5), direction=gun.forward)
+    bullet.shoot()
 
 app = Ursina()
 Sky()
@@ -70,8 +84,9 @@ gun = Entity(
     scale=.18,
     position=(1, -6, 0),
     parent=camera,
-
 )
+
+bullet = None
 
 # gun.texture = 'asset/static/gun/G32SMGModel_LightMetal_BaseMap.png'
 app.run()
