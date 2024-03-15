@@ -39,7 +39,7 @@ from ursina import time
 
 def input(key):
     global player
-    if key == 'q':
+    if key == 'escape':
         app.quit()
     if held_keys['shift']:
         player.speed=400
