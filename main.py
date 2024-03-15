@@ -45,10 +45,10 @@ def input(key):
         player.speed=400
     if not held_keys['shift']:
         player.speed=200
-    if held_keys['c']:
+    if held_keys[Keys.left_control]:
         camera.y = 20
         player.speed=50
-    if not held_keys['c']:
+    if not held_keys[Keys.left_control]:
         camera.y = 50
     if key=='space':
         player.jump_height = 40
