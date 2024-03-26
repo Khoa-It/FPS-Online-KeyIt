@@ -31,7 +31,6 @@ def createTree(x=0, z=0) -> Entity:
                   position=(x, 1, z), colider='box',
                   color=color.rgb(1, 59, 14),
                   scale=(40, 40, 40),
-                  collider='box',
                   )
 
 

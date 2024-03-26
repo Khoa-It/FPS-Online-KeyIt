@@ -1,10 +1,11 @@
 from ursinanetworking import *
-
+import sys
 server = UrsinaNetworkingServer('localhost', 3002)
 easy = EasyUrsinaNetworkingServer(server)
 app = Ursina()
 useractive = {}
 messages = []
+serverStatus = True
 @server.event
 def onClientConnected(Client):
     print(f"{Client.id} join game")

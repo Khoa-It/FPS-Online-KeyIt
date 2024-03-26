@@ -1,8 +1,7 @@
 from ursina import *
 
-# create new class for chatmessage
 
-class ChatMessage():
+class ChatMessage:
     inputText = None
     messages = []
     y_mess = 0.2
