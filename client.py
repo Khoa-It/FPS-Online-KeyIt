@@ -4,7 +4,7 @@ from ChatMessage import ChatMessage
 from Userform import Userform
 
 # ######################
-client = UrsinaNetworkingClient('localhost',3002)
+client = UrsinaNetworkingClient('192.168.167.76',6000)
 easy = EasyUrsinaNetworkingClient(client)
 app = Ursina()
 seftID = -1

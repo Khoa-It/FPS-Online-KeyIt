@@ -8,6 +8,7 @@ from Character import Character
 from SharePostition import modePosition
 
 
+
 # gun_model_path = 'asset/static/gun/Mark23.fbx'
 # gun_texture_path = 'asset/static/gun/Mark23_D.png'
 # glove_texture_path = 'asset/static/gun/Glove_D.png'
@@ -15,7 +16,7 @@ from SharePostition import modePosition
 class Player(FirstPersonController):
     def __init__(self, position):
         self.character = Character(position)
-        self.modController = 3
+        self.modController = 1
         super().__init__(
             position=position,
             model=self.character.stand_entity,
@@ -26,7 +27,9 @@ class Player(FirstPersonController):
             collider="box",
             speed=100
         )
-        
+        self.walksound = Audio('asset/static/sound_effect/running-sounds.mp3', loop = True)
+        self.walksound.volume = 0
+        self.walksound.autoplay = True
         self.bullet = None
         self.cursor.color = color.rgb(255, 0, 0, 122)
         self.ak47 = Entity(parent=camera,
@@ -71,7 +74,7 @@ class Player(FirstPersonController):
         camera.y = 50
         camera.z = -60
         # switch to third controller
-        self.ndk_switch_mode(3)
+        self.ndk_switch_mode(1)
 
     def switch_weapon(self):
         for i,v in enumerate(self.gun):
@@ -180,10 +183,13 @@ class Player(FirstPersonController):
                 self.death()
         else:
             super().update()
+        if held_keys['w'] or held_keys['a'] or held_keys['d'] or held_keys['s']:
+            if self.walksound.volume != 1:
+                self.walksound.volume += .1
+            
+        if not held_keys['w'] and not held_keys['a'] and not held_keys['d'] and not held_keys['s']:
+            self.walksound.volume = 0
 
     def shootBullet(self):
-        print('gun pos:',self.gun[self.curr_weapon].world_position+(0,5,0))
-        Entity(model = 'cube', position = Vec3(self.world_position.x, 1, self.world_position.z), color = color.red)
         self.bullet = Bullet(Vec3(self.world_position.x, 50,self.world_position.z), direction=self.gun[self.curr_weapon].forward)
-        # self.bullet = Bullet(position=Vec3(self.gun[self.curr_weapon].world_position + (5,0,5)), direction=self.gun[self.curr_weapon].forward)
         self.bullet.shoot()

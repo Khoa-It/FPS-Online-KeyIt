@@ -13,7 +13,7 @@ class Bullet(Entity):
         self.direction = direction
         self.speed = 5000
         self.trail = Entity(parent=self, model='sphere', color=color.red, scale=0.3)  # Thêm một trail
-        self.gun_sound = Audio('asset/static/sound_effect/lasergun.wav', loop=False, autoplay=False)
+        self.gun_sound = Audio('asset/static/sound_effect/shotgun-firing-4-6746.mp3', loop=False, autoplay=False)
 
     def update(self):
         self.move_bullet()

@@ -10,6 +10,7 @@ class Character:
         self.stand_entity.position = myPosition
         self.stand_entity.rotation_y  = 180
         self.stand_entity.collider = 'box'
+        self.stand_entity.visible = False
         
         self.running_entity = Entity()
         self.running_entity.position = myPosition

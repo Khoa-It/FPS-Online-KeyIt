@@ -13,7 +13,7 @@ self.bullet = Bullet(position=self.gun[self.curr_weapon].world_position + (self.
 --> Hoàng : func shootbullet --> Player.py
 
 
---> Hoàng:
+--> Hoàng: - bullet.py
 def move_bullet(self):
         if self.y_getter() > 2000 or self.z_getter() > 2000 or self.x_getter() > 2000:
             self.disable()
@@ -35,3 +35,7 @@ def move_bullet(self):
             # else:
             #     self.gun_sound.volume = 0.5  # Giảm âm lượng của âm thanh
             #     # Nếu bạn muốn giảm âm lượng dựa trên khoảng cách cụ thể, bạn có thể điều chỉnh giá trị 0.5 ở đây.
+
+
+--> ndk : player.py
+# self.bullet = Bullet(position=Vec3(self.gun[self.curr_weapon].world_position + (5,0,5)), direction=self.gun[self.curr_weapon].forward)

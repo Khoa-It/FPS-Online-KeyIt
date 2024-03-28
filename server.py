@@ -1,6 +1,21 @@
 from ursinanetworking import *
 import sys
-server = UrsinaNetworkingServer('localhost', 3002)
+# server = UrsinaNetworkingServer('192.168.167.238', 6000)
+import socket
+
+def get_ip_address():
+    hostname = socket.gethostname()
+    ip_address = socket.gethostbyname(hostname)
+    return ip_address
+
+ip_address = get_ip_address()
+print("IP Address:", ip_address)
+
+try:
+    server = UrsinaNetworkingServer('192.168.167.76', 6000)
+except Exception as e:
+    print("Error creating server:", e)
+    sys.exit(1)
 easy = EasyUrsinaNetworkingServer(server)
 app = Ursina()
 useractive = {}
