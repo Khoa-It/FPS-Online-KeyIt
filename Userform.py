@@ -21,5 +21,8 @@ class Userform:
         self.username = name
         print(self.username)
         self.wp.enabled = False
-        self.callback(name)
-        
+        self.callback[0](name)
+        i = 1
+        while i < len(self.callback):
+            self.callback[i]()
+            i+=1

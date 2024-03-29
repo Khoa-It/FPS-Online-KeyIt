@@ -25,16 +25,16 @@ class CustomHealthBar(HealthBar):
         if key == '-' or key == '- hold':
             self.value -= 10
             print('ow')
-        if held_keys[ 'w']:
-            self.y+= .01
-        if held_keys['s']:
-            self.y-= .01
-        if held_keys[ 'a']:
-            self.x-= .01
-        if held_keys[ 'd']:
-            self.x+= .01
-        if key =='space':
-            print('pos:',self.position)
+        # if held_keys[ 'w']:
+        #     self.y+= .01
+        # if held_keys['s']:
+        #     self.y-= .01
+        # if held_keys[ 'a']:
+        #     self.x-= .01
+        # if held_keys[ 'd']:
+        #     self.x+= .01
+        # if key =='space':
+        #     print('pos:',self.position)
         
     
 

@@ -1,56 +1,49 @@
 from ursinanetworking import *
-
 from ChatMessage import ChatMessage
 from Userform import Userform
 
-# ######################
-client = UrsinaNetworkingClient('192.168.167.76',6000)
-easy = EasyUrsinaNetworkingClient(client)
-app = Ursina()
-seftID = -1
-username = 'khoa'
-chatMessage = ChatMessage(username='khoa')
-def updateUsername(name):
-    global username, chatMessage
-    username = name
-    chatMessage.inputText.y = -.43
-
-usform = Userform(updateUsername)
-
-
-
-@client.event
-def GetID(content):
-    global seftID
-    seftID = content
-    print('recieve id player: ', seftID)
-
-@client.event
-def newPlayerLogin(content):
-    print(content)
-    pass
-
-@client.event
-def newMessage(content):
-    print(content)
-    chatMessage.addNewMessage(contentMessage=content['message'], usermes=content['username'])
-    pass
-
-def update():
-    global chatMessage
-    client.process_net_events()
-    chatMessage.scrollcustom()
-
-def input(key):
-    global chatMessage, username
-    if key == Keys.enter:
-        if chatMessage.inputText.text != '':
-            client.send_message('messageFromClient',
-                                {
-                                    'username': username,
-                                    'message': chatMessage.inputText.text
-                                }
-            )
+class MyClient:
+    def __init__(self, ip, port , main_callback):
+        self.ip = ip
+        self.port = port
+        self.main_callback = main_callback
+        self.player_info = {
+            'seftID' : -1,
+            'username' : 'khoa',
+        }
+        self.client = UrsinaNetworkingClient(self.ip,self.port)
+        self.easy = EasyUrsinaNetworkingClient(self.client)
+        self.chatMessage = ChatMessage(username='client anonymous')
+        self.usform = Userform([self.updateUsername , *self.main_callback])
+        
+        @self.client.event
+        def GetID(content):
+            self.player_info['seftID'] = content
+            print('recieve id player: ', self.player_info['seftID'])
+        
+        @self.client.event
+        def newPlayerLogin(content):
+            print(content)
+            pass
+        
+        @self.client.event
+        def newMessage(content):
+            print(content)
+            self.chatMessage.addNewMessage(contentMessage=content['message'], usermes=content['username'])
+            pass
+        
+    def updateUsername(self,name):
+        self.player_info['username'] = name
+        self.chatMessage.inputText.y = -.43
+        
+    def input(self,key):
+        if key == Keys.enter:
+            if self.chatMessage.inputText.text != '':
+                self.client.send_message('messageFromClient',
+                                    {
+                                        'username': self.player_info['username'],
+                                        'message': self.chatMessage.inputText.text
+                                    }
+                )
     
-
-app.run()
+        

@@ -25,6 +25,7 @@ class Bullet(Entity):
         self.animate_trail()  
         hit_info = raycast(self.position, self.direction, distance=self.speed * time.dt, ignore=[self])
         if hit_info.hit:
+            print('ban trung vat the:', hit_info.entity.__class__)
             self.position = hit_info.world_point  
             self.speed = 0 
             self.disable()

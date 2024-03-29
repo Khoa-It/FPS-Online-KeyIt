@@ -5,9 +5,7 @@ from ursina.prefabs.first_person_controller import FirstPersonController
 
 from Bullet import Bullet
 from Character import Character
-from SharePostition import modePosition
-
-
+from CustomHearbar import CustomHealthBar
 
 # gun_model_path = 'asset/static/gun/Mark23.fbx'
 # gun_texture_path = 'asset/static/gun/Mark23_D.png'
@@ -52,23 +50,25 @@ class Player(FirstPersonController):
         self.gun = [self.ak47, self.pistol]
         self.curr_weapon = 0
         self.switch_weapon()
-        self.healthbar_pos = Vec2(0, 0.45)
-        self.healthbar_size = Vec2(0.8, 0.04)
-        self.healthbar_bg = Entity(
-            parent=camera.ui,
-            model="quad",
-            color=color.rgb(255, 0, 0),
-            position=self.healthbar_pos,
-            scale=self.healthbar_size
-        )
-        self.healthbar = Entity(
-            parent=camera.ui,
-            model="quad",
-            color=color.rgb(0, 255, 0),
-            position=self.healthbar_pos,
-            scale=self.healthbar_size
-        )
-        self.health = 100
+        # self.healthbar_pos = Vec2(0, 0.45)
+        # self.healthbar_size = Vec2(0.8, 0.04)
+        # self.healthbar_bg = Entity(
+        #     parent=camera.ui,
+        #     model="quad",
+        #     color=color.rgb(255, 0, 0),
+        #     position=self.healthbar_pos,
+        #     scale=self.healthbar_size
+        # )
+        # self.healthbar = Entity(
+        #     parent=camera.ui,
+        #     model="quad",
+        #     color=color.rgb(0, 255, 0),
+        #     position=self.healthbar_pos,
+        #     scale=self.healthbar_size
+        # )
+        # self.health = 100
+        
+        self.healthbar = CustomHealthBar(1, (0,0,0))
         self.death_message_shown = False
         # difine for camera position
         camera.y = 50
@@ -83,6 +83,7 @@ class Player(FirstPersonController):
             else:
                 v.visible = False
     def input(self, key):
+        self.healthbar.input(key)
         # first controller
         try:
             weapon_index = int(key) - 1
@@ -136,8 +137,8 @@ class Player(FirstPersonController):
         self.cursor.color = color.rgb(0, 0, 0, a=0)  # Ẩn con trỏ
         for gun in self.gun:
             gun.disable()  # Ẩn súng
-        self.healthbar.enabled = False  # Ẩn thanh máu
-        self.healthbar_bg.enabled = False  # Ẩn nền thanh máu
+        # self.healthbar.enabled = False  # Ẩn thanh máu
+        # self.healthbar_bg.enabled = False  # Ẩn nền thanh máu
         self.disable()  # Tắt bộ điều khiển
         Text(text="You are dead!", origin=Vec2(0, 0), scale=3)  # Hiển thị thông báo
     
@@ -145,8 +146,8 @@ class Player(FirstPersonController):
         if controllerMode == 3:
             for gun in self.gun:
                 gun.disable()  # Ẩn súng
-            self.healthbar.enabled = False  # Ẩn thanh máu
-            self.healthbar_bg.enabled = False  # Ẩn nền thanh máu
+            # self.healthbar.enabled = False  # Ẩn thanh máu
+            # self.healthbar_bg.enabled = False  # Ẩn nền thanh máu
             self.character.stand_entity.visible = True
             self.character.running_entity.visible = False
         else:
@@ -156,7 +157,7 @@ class Player(FirstPersonController):
                 gun.enable()  # Bật súng
             self.curr_weapon = 0
             self.gun[self.curr_weapon].visible = True
-            self.healthbar.enabled = True  # Bật thanh máu
+            # self.healthbar.enabled = True  # Bật thanh máu
             # self.healthbar_bg.enabled = True  # Bật nền thanh máu
             
 
@@ -177,8 +178,8 @@ class Player(FirstPersonController):
     def update(self):
         if self.bullet:
             self.bullet.update()  # Cập nhật vị trí của viên đạn
-        self.healthbar.scale_x = self.health / 100 * self.healthbar_size.x
-        if self.health <= 0:
+        # self.healthbar.scale_x = self.health / 100 * self.healthbar_size.x
+        if self.healthbar.value <= 0:
             if not self.death_message_shown:
                 self.death()
         else:
