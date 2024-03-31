@@ -21,3 +21,7 @@ class Character:
         self.running_entity.rotation_y = 180
         self.running_entity.visible = False
         self.running_entity.collider = 'box'
+        
+    def log_out(self):
+        destroy(self.stand_entity)
+        destroy(self.running_entity)

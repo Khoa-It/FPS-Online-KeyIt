@@ -1,56 +1,77 @@
+from ursinanetworking import easyursinanetworking
 from ursinanetworking import *
 import sys
 # server = UrsinaNetworkingServer('192.168.167.238', 6000)
-import socket
+class MyServer:
+    def __init__(self, ip, port):
+        self.ip = ip
+        self.port = port
+        self.start_server = True
+        self.update_server = False
+        self.server = None
+        self.easy = None
+        self.user_active = {}
+        self.messages = []
+        self.notifycation = None
+        self.notifycation_content = None
 
-def get_ip_address():
-    hostname = socket.gethostname()
-    ip_address = socket.gethostbyname(hostname)
-    return ip_address
+    def handle(self):
+        if self.start_server:
+            self.server = UrsinaNetworkingServer(self.ip, self.port)
+            self.easy = easyursinanetworking.EasyUrsinaNetworkingServer(self.server)
+            self.notifycation = Text(f"this is server with ip address: {self.ip}", position=Vec3(-0.25, 0.45, 0))
+            self.notifycation_content = Text("=========Log content============", position=Vec3(-0.85, 0.4, 0))
 
-ip_address = get_ip_address()
-print("IP Address:", ip_address)
+            @self.server.event
+            def onClientConnected(Client):
+                print(f"{Client.id} join game")
+                self.notifycation_content.text += "\n" + f"{Client.id} join game"
+                
+                self.easy.create_replicated_variable(Client.id,{"id": Client.id, 'position': (0,0,0)})
+                Client.send_message('GetID', Client.id)
+                self.server.broadcast('newPlayerLogin',
+                    {
+                        'id':Client.id,
+                        'name':Client.name,
+                        'position':(0,1,0),
+                    }                 
+                )
+                Client.send_message('syncMessage',self.messages)
 
-try:
-    server = UrsinaNetworkingServer('192.168.167.76', 6000)
-except Exception as e:
-    print("Error creating server:", e)
-    sys.exit(1)
-easy = EasyUrsinaNetworkingServer(server)
-app = Ursina()
-useractive = {}
-messages = []
-serverStatus = True
-@server.event
-def onClientConnected(Client):
-    print(f"{Client.id} join game")
-    Client.send_message('GetID', Client.id)
-    useractive[Client.id] = {
-        'name':Client.name,
-        'position':(0,1,0),
-    }
-    server.broadcast('newPlayerLogin',
-        {
-            'id':Client.id,
-            'name':Client.name,
-            'position':(0,1,0),
-        }                 
-    )
-    Client.send_message('syncMessage',messages)
+            @self.server.event
+            def onClientDisconnected(Client):
+                print(f"{Client} leave game")
+                self.notifycation_content.text += "\n" + f"{Client.id} leave game"
+                self.easy.remove_replicated_variable_by_name(Client.id)
+                self.server.broadcast('existedClientDisConnected', Client.id)
 
-@server.event
-def onClientDisconnected(Client):
-    print(f"{Client} leave game")
+            @self.server.event
+            def messageFromClient(Client,message):
+                print(f"{message}")
+                self.notifycation_content.text += "\n" + f"chatmessage feature: {message}"
+                self.server.broadcast('newMessage',message)
+            
+            @self.server.event
+            def updatePosition(Client,content):
+                print(content)
+                self.easy.update_replicated_variable_by_name(Client.id, 'position', content)
 
-@server.event
-def messageFromClient(Client,message):
-    print(f"{message}")
-    server.broadcast('newMessage',message)
+            self.start_server = False
+            self.update_server = True
 
-def update():
-    server.process_net_events()
 
-app.run()
+    def input(self,key):
+        if held_keys[ 'w']:
+            self.notifycation_content.y += .05
+        if held_keys['s']:
+            self.notifycation_content.y -=.05
+        if held_keys[ 'a']:
+            self.notifycation_content.x -=.05
+        if held_keys[ 'd']:
+            self.notifycation_content.x +=.05
+        if key =='space':
+            print(self.notifycation_content.position)
+
 
 
 

@@ -1,7 +1,6 @@
 from typing import Any
 from ursina import *
 class Userform:
-    username = ''
     def __init__(self, callback):
         self.callback = callback
         self.wp = WindowPanel(
@@ -18,11 +17,5 @@ class Userform:
         # center the window panel
         self.wp.content[2].on_click = Func(lambda: self.setter_usname(self.wp.content[1].text))
     def setter_usname(self, name):
-        self.username = name
-        print(self.username)
         self.wp.enabled = False
         self.callback[0](name)
-        i = 1
-        while i < len(self.callback):
-            self.callback[i]()
-            i+=1

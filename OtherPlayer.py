@@ -8,4 +8,6 @@ class OtherPlayer:
         self.character = Character(position)
         self.character.stand_entity.visible = True
         self.healthbar = CustomHealthBar(3,(0,1,0))
+    def logout(self):
+        self.character.log_out()
         
