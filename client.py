@@ -2,12 +2,12 @@ from ursinanetworking import *
 from ChatMessage import ChatMessage
 from OtherPlayer import OtherPlayer
 from Userform import Userform
+from player import Player
 
 class MyClient:
-    def __init__(self, username, ip, port , main_callback):
+    def __init__(self, username, ip, port ):
         self.ip = ip
         self.port = port
-        self.main_callback = main_callback
         self.list_other_players:list[OtherPlayer] = []
         self.player_info = {
             'id' : -1,
@@ -16,7 +16,8 @@ class MyClient:
         self.client = UrsinaNetworkingClient(self.ip,self.port)
         self.easy = EasyUrsinaNetworkingClient(self.client)
         self.chatMessage = ChatMessage(username)
-        self.main_callback[0]()
+        self.player = Player(Vec3(0,3.5,0))
+        Audio('asset/static/sound_effect/getready.ogg').play()
         
         @self.client.event
         def GetID(content):
@@ -26,7 +27,7 @@ class MyClient:
             
             for item in self.easy.replicated_variables:
                 print(item)
-                self.list_other_players.append(OtherPlayer((0,3,0)))
+                self.list_other_players.append(OtherPlayer((0,3.5,0)))
             self.list_other_players[content].logout()
             
         
@@ -35,7 +36,7 @@ class MyClient:
             print('-------ndk log new user login-------')
             print(content)
             if content['id'] != self.player_info['id']:
-                self.list_other_players.append(OtherPlayer((0,3,0)))
+                self.list_other_players.append(OtherPlayer((0,3.5,0)))
             
         
         @self.client.event
@@ -58,6 +59,15 @@ class MyClient:
         def onReplicatedVariableUpdated(Content):
             print('-------ndk log one syn var updated-------')
             print(Content)
+            if Content.content['id'] != self.player_info['id']:
+                print('owwwwww')
+                self.list_other_players[Content.content['id']].setPos(Content.content['position'])
+                self.list_other_players[Content.content['id']].setRot(Content.content['rotation'])
+                if Content.content['status'] == 'stand':
+                    self.list_other_players[Content.content['id']].stand()
+                else:
+                    self.list_other_players[Content.content['id']].running()
+
         
         @self.easy.event
         def onReplicatedVariableRemoved(Content):    
@@ -70,6 +80,7 @@ class MyClient:
         
         
     def input(self,key):
+        
         if key == Keys.enter:
             if self.chatMessage.inputText.text != '':
                 self.client.send_message('messageFromClient',
@@ -79,8 +90,14 @@ class MyClient:
                                     }
                 )
         if held_keys['a'] or held_keys['s'] or held_keys['d'] or held_keys['w']:
-            local_position = self.main_callback[1]()
-            self.client.send_message('updatePosition',local_position)
+            self.client.send_message('updatePosition',self.player.model.world_position)
+            self.client.send_message('updateRotation', self.player.model.world_rotation)
+            self.client.send_message('updateStatus', 'running')
+        if not held_keys['a'] and not held_keys['s'] and not held_keys['d'] and not held_keys['w']:
+            self.client.send_message('updateStatus', 'stand')
+        
+            
+
         
     
         
