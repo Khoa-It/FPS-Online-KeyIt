@@ -75,7 +75,14 @@ class MyServer:
             def updateStatus(Client,content):
                 print('server recieved status:', content)
                 self.easy.update_replicated_variable_by_name(Client.id,'status',content)
-               
+            @self.server.event
+            def clientShooting(Client,content):
+                print('server recieved client shooting signal:', content)
+                self.server.broadcast('bulletFromOtherPlayer',{
+                    'id':Client.id,
+                    'position':content['position'],
+                    'direction':content['direction'],
+                })
             self.start_server = False
             self.update_server = True
 
