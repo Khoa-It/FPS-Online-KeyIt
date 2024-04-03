@@ -8,6 +8,8 @@ class OtherPlayer:
         self.character = Character(position)
         self.character.stand_entity.visible = True
         self.healthbar = CustomHealthBar(3,(0,1,0))
+    def getPos(self):
+        return self.character.stand_entity.position
     def setPos(self, position):
         self.character.stand_entity.position = position
         self.character.running_entity.position = position

@@ -31,6 +31,13 @@ def update():
     if my_client:
         my_client.client.process_net_events()
         my_client.easy.process_net_events()
+        if len(my_client.other_bullet) > 0:
+            for bullet in my_client.other_bullet:
+                bullet.update()
+        
+            
+            
+        
     
 def input(key):
     global my_client

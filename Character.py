@@ -25,3 +25,5 @@ class Character:
     def log_out(self):
         destroy(self.stand_entity)
         destroy(self.running_entity)
+    def getPos(self):
+        return self.stand_entity.world_position

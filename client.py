@@ -1,5 +1,7 @@
 from ursinanetworking import *
+from Bullet import Bullet
 from ChatMessage import ChatMessage
+from OtherBullet import OtherBullet
 from OtherPlayer import OtherPlayer
 from Userform import Userform
 from player import Player
@@ -16,7 +18,10 @@ class MyClient:
         self.client = UrsinaNetworkingClient(self.ip,self.port)
         self.easy = EasyUrsinaNetworkingClient(self.client)
         self.chatMessage = ChatMessage(username)
-        self.player = Player(Vec3(0,3.5,0))
+        self.player = Player(Vec3(0,3.5,0), [self.sendSignalShooting])
+        self.pos = (0,0,0)
+        self.other_bullet:list[OtherBullet] = []
+        self.time_start = time.time()
         Audio('asset/static/sound_effect/getready.ogg').play()
         
         @self.client.event
@@ -29,6 +34,7 @@ class MyClient:
                 print(item)
                 self.list_other_players.append(OtherPlayer((0,3.5,0)))
             self.list_other_players[content].logout()
+            print(self.otherbullet)
             
         
         @self.client.event
@@ -37,6 +43,7 @@ class MyClient:
             print(content)
             if content['id'] != self.player_info['id']:
                 self.list_other_players.append(OtherPlayer((0,3.5,0)))
+                
             
         
         @self.client.event
@@ -44,11 +51,20 @@ class MyClient:
             print(content)
             self.chatMessage.addNewMessage(contentMessage=content['message'], usermes=content['username'])
             pass
+        
         @self.client.event
         def existedClientDisConnected(idPlayerLogout):
             print('----------ndk log - Existed client disconnect----')
             print('removed id:', idPlayerLogout)
             self.list_other_players[idPlayerLogout].logout()
+            
+        @self.client.event
+        def bulletFromOtherPlayer(content):
+            print('----------ndk log - other player shooting:', content)
+            if content['id'] != self.player_info['id']:
+                self.other_bullet.append(OtherBullet(pos=content['position']+(0,40,0), direction=content['direction'])) 
+                print('vi tri nguoi ban:', self.list_other_players[content['id']].getPos())
+                # self.otherbullet.shoot()
             
         @self.easy.event
         def onReplicatedVariableCreated(Content):
@@ -77,7 +93,12 @@ class MyClient:
     def updateUsername(self,name):
         self.player_info['username'] = name
         self.chatMessage.inputText.y = -.43
-        
+      
+    def sendSignalShooting(self, position, direction):
+          self.client.send_message('clientShooting', {
+              'position': position,
+              'direction': direction
+          })
         
     def input(self,key):
         
@@ -97,7 +118,6 @@ class MyClient:
             self.client.send_message('updateStatus', 'stand')
         
             
-
-        
+                
     
         

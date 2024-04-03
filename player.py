@@ -12,9 +12,10 @@ from CustomHearbar import CustomHealthBar
 # glove_texture_path = 'asset/static/gun/Glove_D.png'
 # arm_texture_path = 'asset/static/gun/Hand_D.png'
 class Player(FirstPersonController):
-    def __init__(self, position):
+    def __init__(self, position, clientCallback):
         self.character = Character(position)
         self.modController = 1
+        self.clientCallback = clientCallback
         super().__init__(
             position=position,
             model=self.character.stand_entity,
@@ -190,7 +191,11 @@ class Player(FirstPersonController):
             
         if not held_keys['w'] and not held_keys['a'] and not held_keys['d'] and not held_keys['s']:
             self.walksound.volume = 0
-
+            
+    def getClass(self):
+        return self.__class__
     def shootBullet(self):
-        self.bullet = Bullet(Vec3(self.world_position.x, 50,self.world_position.z), direction=self.gun[self.curr_weapon].forward)
+        self.clientCallback[0](self.character.getPos()+(0,4,0), self.gun[self.curr_weapon].forward)
+        self.bullet = Bullet(self.gun[self.curr_weapon].world_position, direction=self.gun[self.curr_weapon].forward, listObjectIgnore=[*self.gun, self.character.stand_entity, self.character.running_entity, self.character.stand_actor, self.character.running_actor], listCallback=[self.getClass])
         self.bullet.shoot()
+        

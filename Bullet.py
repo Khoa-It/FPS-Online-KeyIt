@@ -1,34 +1,46 @@
 from ursina import *
 
 
+
 class Bullet(Entity):
-    def __init__(self, position, direction):
+    def __init__(self, position, direction, listObjectIgnore:list, listCallback:list):
         super().__init__(
             model='sphere',
             texture='white_cube',
             color=color.black,
-            scale=3,
-            position=position
+            scale=10,
+            position=position,
+            collider = 'sphere'
         )
+        self.time_start = time.time()
+        self.alive = True
+        self.listCallback = listCallback
+        self.listObjectIgnore = listObjectIgnore
         self.direction = direction
-        self.speed = 5000
         self.trail = Entity(parent=self, model='sphere', color=color.red, scale=0.3)  # Thêm một trail
         self.gun_sound = Audio('asset/static/sound_effect/shotgun-firing-4-6746.mp3', loop=False, autoplay=False)
 
     def update(self):
+        if time.time() - self.time_start >= 5:
+            self.alive = False
         self.move_bullet()
     def move_bullet(self):
+        if not self.alive:
+            self.deleteBullet()
+            return
         if self.y_getter() > 2000 or self.z_getter() > 2000 or self.x_getter() > 2000:
-            self.disable()
-        self.position += self.direction * self.speed * time.dt
+            self.deleteBullet()
+            return
+        self.position += self.direction  * 50
         self.rotation_y += 5  
         self.animate_trail()  
-        hit_info = raycast(self.position, self.direction, distance=self.speed * time.dt, ignore=[self])
-        if hit_info.hit:
-            print('ban trung vat the:', hit_info.entity.__class__)
-            self.position = hit_info.world_point  
-            self.speed = 0 
-            self.disable()
+        hitinfo = self.intersects(ignore=self.listObjectIgnore)
+        if hitinfo.hit and not isinstance(hitinfo.entity, self.listCallback[0]()):
+            print("-----------------bullet.py notification---------------------------------")
+            print('ban trung vat the', hitinfo.entity.__class__)
+            print('vi tri vat the bi ban trung', hitinfo.entity.position)
+            print("-----------------bullet.py---------------------------------")
+            self.deleteBullet()
             
     def animate_trail(self):
         self.trail.position = self.position  
@@ -38,3 +50,7 @@ class Bullet(Entity):
         self.gun_sound.play()
         self.move_bullet()
 
+    def deleteBullet(self):
+        self.trail.enable = False
+        destroy(self.trail)
+        destroy(self)
