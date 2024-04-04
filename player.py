@@ -196,6 +196,6 @@ class Player(FirstPersonController):
         return self.__class__
     def shootBullet(self):
         self.clientCallback[0](self.character.getPos()+(0,4,0), self.gun[self.curr_weapon].forward)
-        self.bullet = Bullet(self.gun[self.curr_weapon].world_position, direction=self.gun[self.curr_weapon].forward, listObjectIgnore=[*self.gun, self.character.stand_entity, self.character.running_entity, self.character.stand_actor, self.character.running_actor], listCallback=[self.getClass])
+        self.bullet = Bullet(self.gun[self.curr_weapon].world_position, direction=self.gun[self.curr_weapon].forward, listObjectIgnore=[*self.gun, self.character.stand_entity, self.character.running_entity, self.character.stand_actor, self.character.running_actor], listCallback=[self.getClass,* self.clientCallback])
         self.bullet.shoot()
         

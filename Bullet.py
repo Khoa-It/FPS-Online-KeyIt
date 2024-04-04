@@ -1,5 +1,8 @@
 from ursina import *
 
+from Character import Character
+from OtherPlayer import OtherPlayer
+
 
 
 class Bullet(Entity):
@@ -19,6 +22,8 @@ class Bullet(Entity):
         self.direction = direction
         self.trail = Entity(parent=self, model='sphere', color=color.red, scale=0.3)  # Thêm một trail
         self.gun_sound = Audio('asset/static/sound_effect/shotgun-firing-4-6746.mp3', loop=False, autoplay=False)
+        # self.listOtherPlayer = self.listCallback[2]()
+        # print(self.listOtherPlayer)
 
     def update(self):
         if time.time() - self.time_start >= 5:
@@ -34,13 +39,26 @@ class Bullet(Entity):
         self.position += self.direction  * 50
         self.rotation_y += 5  
         self.animate_trail()  
-        hitinfo = self.intersects(ignore=self.listObjectIgnore)
-        if hitinfo.hit and not isinstance(hitinfo.entity, self.listCallback[0]()):
-            print("-----------------bullet.py notification---------------------------------")
-            print('ban trung vat the', hitinfo.entity.__class__)
-            print('vi tri vat the bi ban trung', hitinfo.entity.position)
-            print("-----------------bullet.py---------------------------------")
-            self.deleteBullet()
+        # hitinfo = self.intersects(ignore=self.listObjectIgnore)
+        hit_info = self.intersects(ignore=self.listObjectIgnore)
+        if hit_info.hit and not isinstance(hit_info.entity, self.listCallback[0]()):
+            if isinstance(hit_info.entity, Character):
+                print('charac ---- ban trung muc tieu:', hit_info.entity.get_character_model())
+            print('ban da ban trung muc tieu:', hit_info.entity.model)
+            
+        # for item in self.listOtherPlayer:
+        #     if self.intersects(item).hit:
+        #         print('ban trung nguoi choi: ', item)
+                
+            
+            
+        # if hitinfo.hit and not isinstance(hitinfo.entity, self.listCallback[0]()):
+        #     print("-----------------bullet.py notification---------------------------------")
+        #     print('ban trung vat the', hitinfo.entity.__class__)
+        #     print('vi tri vat the bi ban trung', hitinfo.entity.position)
+        #     print(self.listCallback[1](hitinfo.entity))
+        #     print("-----------------bullet.py---------------------------------")
+        #     self.deleteBullet()
             
     def animate_trail(self):
         self.trail.position = self.position  

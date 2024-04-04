@@ -1,22 +1,22 @@
-from venv import create
 from ursina import *
-from direct.actor.Actor import Actor
-from ursina.prefabs.first_person_controller import FirstPersonController
-from ChatMessage import ChatMessage
 from CustomLib import *
-from OtherPlayer import OtherPlayer
 from Userform import Userform
 from client import MyClient
-from player import Player
 from Map import Map
 
 
 
 def create_client(username):
     global my_client
-    my_client = MyClient(username,'192.168.1.6',6000)
+    my_client = MyClient(username,'192.168.1.7',6000)
 
 app = Ursina()
+# window.title = 'FPS online keyit'
+# window.fullscreen = False
+# window.borderless = False
+# window.exit_button.visible = True
+# window.show_ursina_splash = True
+# window.size = (650, 600)
 my_client = None
 Userform([create_client])
 Sky()
