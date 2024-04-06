@@ -43,3 +43,21 @@ def createHouse(x=0, z=0, corner=0) -> Entity:
         rotation_y=corner,
         collider='box',
     )
+
+def moveObject(object):
+    if not object:
+        return
+    if held_keys['a']:
+        object.x-=1
+    if held_keys['d']:
+        object.x+=1
+    if held_keys['w']:
+        object.y+=1
+    if held_keys['s']:
+        object.y-=1
+    if held_keys[Keys.up_arrow]:
+        object.z+=1
+    if held_keys[Keys.down_arrow]:
+        object.z-=1
+    if held_keys['space']:
+        print(object.position)

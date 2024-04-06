@@ -7,7 +7,7 @@ from Userform import Userform
 from player import Player
 
 class MyClient:
-    def __init__(self, username, ip, port ):
+    def __init__(self, username, ip, port , start_position):
         self.ip = ip
         self.port = port
         self.list_other_players:list[OtherPlayer] = []
@@ -15,11 +15,11 @@ class MyClient:
             'id' : -1,
             'username' : username,
         }
+        self.start_position = start_position
         self.client = UrsinaNetworkingClient(self.ip,self.port)
         self.easy = EasyUrsinaNetworkingClient(self.client)
         self.chatMessage = ChatMessage(username)
-        self.player = Player(Vec3(0,3.5,0), [self.sendSignalShooting, self.printPosOfOtherPlayer, self.getListOtherPlayers, self.getIdPlayers])
-        self.pos = (0,0,0)
+        self.player = Player(position= self.start_position, clientCallback= [self.sendSignalShooting, self.printPosOfOtherPlayer, self.getListOtherPlayers, self.getIdPlayers], ignorePosition= self.start_position)
         self.other_bullet:list[OtherBullet] = []
         self.time_start = time.time()
         Audio('asset/static/sound_effect/getready.ogg').play()
@@ -33,6 +33,9 @@ class MyClient:
             for item in self.easy.replicated_variables:
                 # print(item)
                 self.list_other_players.append(OtherPlayer((0,3.5,0)))
+                self.list_other_players[item].setPos(self.easy.replicated_variables[item].content['position'])
+                # print(self.easy.replicated_variables[item].content['position'])
+                
             self.list_other_players[content].logout()
             # print(self.otherbullet)
             
@@ -100,13 +103,11 @@ class MyClient:
               'position': position,
               'direction': direction
           })
-    def printPosOfOtherPlayer(self, hitEntity):
+    def printPosOfOtherPlayer(self):
         print('---------function: printPosOfOtherPlayer - client.py-------------')
         count = 0
         for item in self.list_other_players:
             if count != self.player_info['id']:
-                if hitEntity == item.character.stand_entity or hitEntity == item.character.running_entity:
-                    print('ban trung nguoi choi :', count)
                 print('vi tri nguoi choi khac la: ',item.getPos())
             count+=1
             

@@ -8,7 +8,7 @@ from Map import Map
 
 def create_client(username):
     global my_client
-    my_client = MyClient(username,'192.168.1.7',6000)
+    my_client = MyClient(username,'192.168.1.7',6000, Vec3(0,0,0))
 
 app = Ursina()
 # window.title = 'FPS online keyit'

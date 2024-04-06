@@ -12,7 +12,7 @@ from CustomHearbar import CustomHealthBar
 # glove_texture_path = 'asset/static/gun/Glove_D.png'
 # arm_texture_path = 'asset/static/gun/Hand_D.png'
 class Player(FirstPersonController):
-    def __init__(self, position, clientCallback):
+    def __init__(self, position, clientCallback, ignorePosition):
         self.character = Character(position)
         self.modController = 1
         self.clientCallback = clientCallback
@@ -26,6 +26,7 @@ class Player(FirstPersonController):
             collider="box",
             speed=100
         )
+        self.ignorePosition = ignorePosition
         self.walksound = Audio('asset/static/sound_effect/running-sounds.mp3', loop = True)
         self.walksound.volume = 0
         self.walksound.autoplay = True
@@ -51,23 +52,6 @@ class Player(FirstPersonController):
         self.gun = [self.ak47, self.pistol]
         self.curr_weapon = 0
         self.switch_weapon()
-        # self.healthbar_pos = Vec2(0, 0.45)
-        # self.healthbar_size = Vec2(0.8, 0.04)
-        # self.healthbar_bg = Entity(
-        #     parent=camera.ui,
-        #     model="quad",
-        #     color=color.rgb(255, 0, 0),
-        #     position=self.healthbar_pos,
-        #     scale=self.healthbar_size
-        # )
-        # self.healthbar = Entity(
-        #     parent=camera.ui,
-        #     model="quad",
-        #     color=color.rgb(0, 255, 0),
-        #     position=self.healthbar_pos,
-        #     scale=self.healthbar_size
-        # )
-        # self.health = 100
         
         self.healthbar = CustomHealthBar(1, (0,0,0))
         self.death_message_shown = False
@@ -196,6 +180,6 @@ class Player(FirstPersonController):
         return self.__class__
     def shootBullet(self):
         self.clientCallback[0](self.character.getPos()+(0,4,0), self.gun[self.curr_weapon].forward)
-        self.bullet = Bullet(self.gun[self.curr_weapon].world_position, direction=self.gun[self.curr_weapon].forward, listObjectIgnore=[*self.gun, self.character.stand_entity, self.character.running_entity, self.character.stand_actor, self.character.running_actor], listCallback=[self.getClass,* self.clientCallback])
+        self.bullet = Bullet(self.gun[self.curr_weapon].world_position, direction=self.gun[self.curr_weapon].forward, listObjectIgnore=[*self.gun, self.character.stand_entity, self.character.running_entity, self.character.stand_actor, self.character.running_actor],getPlayerClass=self.getClass ,listClientCallBack= self.clientCallback, ignorePosition=self.ignorePosition)
         self.bullet.shoot()
         

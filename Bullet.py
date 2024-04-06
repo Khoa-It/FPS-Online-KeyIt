@@ -6,7 +6,7 @@ from OtherPlayer import OtherPlayer
 
 
 class Bullet(Entity):
-    def __init__(self, position, direction, listObjectIgnore:list, listCallback:list):
+    def __init__(self, position, direction, listObjectIgnore:list, getPlayerClass,ignorePosition, listClientCallBack:list):
         super().__init__(
             model='sphere',
             texture='white_cube',
@@ -15,9 +15,11 @@ class Bullet(Entity):
             position=position,
             collider = 'sphere'
         )
+        self.ignorePosition = ignorePosition
         self.time_start = time.time()
         self.alive = True
-        self.listCallback = listCallback
+        self.getPlayerClass = getPlayerClass
+        self.listClientCallBack = listClientCallBack
         self.listObjectIgnore = listObjectIgnore
         self.direction = direction
         self.trail = Entity(parent=self, model='sphere', color=color.red, scale=0.3)  # Thêm một trail
@@ -28,11 +30,13 @@ class Bullet(Entity):
     def update(self):
         if time.time() - self.time_start >= 5:
             self.alive = False
-        self.move_bullet()
-    def move_bullet(self):
         if not self.alive:
             self.deleteBullet()
             return
+        if self.alive:
+            self.move_bullet()
+    def move_bullet(self):
+        
         if self.y_getter() > 2000 or self.z_getter() > 2000 or self.x_getter() > 2000:
             self.deleteBullet()
             return
@@ -41,10 +45,13 @@ class Bullet(Entity):
         self.animate_trail()  
         # hitinfo = self.intersects(ignore=self.listObjectIgnore)
         hit_info = self.intersects(ignore=self.listObjectIgnore)
-        if hit_info.hit and not isinstance(hit_info.entity, self.listCallback[0]()):
-            if isinstance(hit_info.entity, Character):
-                print('charac ---- ban trung muc tieu:', hit_info.entity.get_character_model())
-            print('ban da ban trung muc tieu:', hit_info.entity.model)
+        if hit_info.hit and not isinstance(hit_info.entity, self.getPlayerClass()) and hit_info.entity.position != self.ignorePosition:
+            print('ban da ban trung muc tieu co vi tri la:', hit_info.entity.position)
+            print('model cua vat the:', hit_info.entity.model)
+            print('class cua vat the:', hit_info.entity.__class__)
+            self.listClientCallBack[1]()
+            self.alive = False
+            
             
         # for item in self.listOtherPlayer:
         #     if self.intersects(item).hit:
