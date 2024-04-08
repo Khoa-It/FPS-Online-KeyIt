@@ -19,7 +19,7 @@ class MyClient:
         self.client = UrsinaNetworkingClient(self.ip,self.port)
         self.easy = EasyUrsinaNetworkingClient(self.client)
         self.chatMessage = ChatMessage(username)
-        self.player = Player(position= self.start_position, clientCallback= [self.sendSignalShooting, self.printPosOfOtherPlayer, self.getListOtherPlayers, self.getIdPlayers], ignorePosition= self.start_position)
+        self.player = Player(position= self.start_position, clientCallback= [self.sendSignalShooting, self.printPosOfOtherPlayer, self.getListOtherPlayers, self.getIdPlayers, self.check_player_shot], ignorePosition= self.start_position)
         self.other_bullet:list[OtherBullet] = []
         self.time_start = time.time()
         Audio('asset/static/sound_effect/getready.ogg').play()
@@ -68,7 +68,11 @@ class MyClient:
                 self.other_bullet.append(OtherBullet(pos=content['position']+(0,40,0), direction=content['direction'])) 
                 # print('vi tri nguoi ban:', self.list_other_players[content['id']].getPos())
                 # self.otherbullet.shoot()
-            
+        @self.client.event
+        def decrease_hp(content):
+            if content == self.player_info['id']:
+                self.player.healthbar.value -= 20
+        
         @self.easy.event
         def onReplicatedVariableCreated(Content):
             # print('-------ndk log new syn var created-------')
@@ -108,9 +112,21 @@ class MyClient:
         count = 0
         for item in self.list_other_players:
             if count != self.player_info['id']:
-                print('vi tri nguoi choi khac la: ',item.getPos())
+                print('vi tri nguoi choi khac la: ',item.pos)
             count+=1
             
+    def check_player_shot(self, bullet_pos):
+        count = 0
+        for item in self.list_other_players:
+            if count != self.player_info['id']:
+                if item.pos == bullet_pos:
+                    item.healthbar.value -= 20
+                    self.client.send_message('player_shot',count)
+                    print('nguoi choi bi tru mau co id:', count)
+                    print('so mau con lai cua nguoi choi la:', item.healthbar.value)
+                    if item.healthbar.value <= 0:
+                        item.logout()
+                            
     def getListOtherPlayers(self):
         return list(filter(lambda x: self.list_other_players.index(x) != self.player_info['id'], self.list_other_players))
     

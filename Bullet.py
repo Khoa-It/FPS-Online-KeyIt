@@ -50,6 +50,7 @@ class Bullet(Entity):
             print('model cua vat the:', hit_info.entity.model)
             print('class cua vat the:', hit_info.entity.__class__)
             self.listClientCallBack[1]()
+            self.listClientCallBack[4](hit_info.entity.position)
             self.alive = False
             
             

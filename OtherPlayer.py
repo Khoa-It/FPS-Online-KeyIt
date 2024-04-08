@@ -3,7 +3,7 @@ from Character import Character
 from CustomHearbar import CustomHealthBar
 class OtherPlayer(Entity):
     def __init__(self, position):
-        self.position = position
+        self.pos = position
         self.id = 1
         self.character = Character(position)
         self.character.stand_entity.visible = True
@@ -11,12 +11,11 @@ class OtherPlayer(Entity):
         self.collider = 'box'
         self.model_copy = Entity(model = 'cube', scale = (15,120,15), position = position, collider = 'box')
         self.model_copy.visible = False
-    def getPos(self):
-        return self.model_copy.position
     def setPos(self, position):
         self.character.stand_entity.position = position
         self.character.running_entity.position = position
         self.model_copy.position = position
+        self.pos = position
     def setRot(self, rotation):
         self.character.stand_entity.rotation = rotation
         self.character.running_entity.rotation = rotation

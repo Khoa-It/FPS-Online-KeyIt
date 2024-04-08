@@ -1,3 +1,4 @@
+from pyexpat import model
 from random import random, randint
 from direct.actor.Actor import Actor
 from ursina import *
@@ -6,6 +7,7 @@ from ursina.prefabs.first_person_controller import FirstPersonController
 from Bullet import Bullet
 from Character import Character
 from CustomHearbar import CustomHealthBar
+from CustomLib import createMyCube
 
 # gun_model_path = 'asset/static/gun/Mark23.fbx'
 # gun_texture_path = 'asset/static/gun/Mark23_D.png'
@@ -16,14 +18,16 @@ class Player(FirstPersonController):
         self.character = Character(position)
         self.modController = 1
         self.clientCallback = clientCallback
+        self.cubeModel = createMyCube(position.x, position.z, 50, color.black)
+        self.cubeModel.y+= 10
         super().__init__(
             position=position,
             model=self.character.stand_entity,
             jump_height=20.5,
             jump_duration=0.05,
             gravity=10,
-            origin_y=2,
-            collider="box",
+            origin_y=1,
+            # collider="box",
             speed=100
         )
         self.ignorePosition = ignorePosition
@@ -131,8 +135,6 @@ class Player(FirstPersonController):
         if controllerMode == 3:
             for gun in self.gun:
                 gun.disable()  # Ẩn súng
-            # self.healthbar.enabled = False  # Ẩn thanh máu
-            # self.healthbar_bg.enabled = False  # Ẩn nền thanh máu
             self.character.stand_entity.visible = True
             self.character.running_entity.visible = False
         else:
@@ -142,8 +144,6 @@ class Player(FirstPersonController):
                 gun.enable()  # Bật súng
             self.curr_weapon = 0
             self.gun[self.curr_weapon].visible = True
-            # self.healthbar.enabled = True  # Bật thanh máu
-            # self.healthbar_bg.enabled = True  # Bật nền thanh máu
             
 
     def death(self):
@@ -170,11 +170,17 @@ class Player(FirstPersonController):
         else:
             super().update()
         if held_keys['w'] or held_keys['a'] or held_keys['d'] or held_keys['s']:
+            self.cubeModel.position = self.world_position
             if self.walksound.volume != 1:
                 self.walksound.volume += .1
             
         if not held_keys['w'] and not held_keys['a'] and not held_keys['d'] and not held_keys['s']:
             self.walksound.volume = 0
+            
+        # hit_info = self.cubeModel.intersects()
+        # if hit_info.hit and hit_info.entity.position != Vec3(0,0,0):
+        #     self.world_position = hit_info.world_point
+            
             
     def getClass(self):
         return self.__class__

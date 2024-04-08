@@ -64,16 +64,16 @@ class MyServer:
            
             @self.server.event
             def updatePosition(Client,content):
-                print('server recieved position:', content)
+                # print('server recieved position:', content)
                 self.easy.update_replicated_variable_by_name(Client.id, 'position', content)
            
             @self.server.event
             def updateRotation(Client,content):
-                print('server recieved rotation:', content)
+                # print('server recieved rotation:', content)
                 self.easy.update_replicated_variable_by_name(Client.id,'rotation',content)
             @self.server.event
             def updateStatus(Client,content):
-                print('server recieved status:', content)
+                # print('server recieved status:', content)
                 self.easy.update_replicated_variable_by_name(Client.id,'status',content)
             @self.server.event
             def clientShooting(Client,content):
@@ -83,6 +83,12 @@ class MyServer:
                     'position':content['position'],
                     'direction':content['direction'],
                 })
+            @self.server.event
+            def player_shot(Client, content):
+                print('server recieved player shot signal:', content)
+                self.server.broadcast('decrease_hp', content)
+                
+
             self.start_server = False
             self.update_server = True
 
