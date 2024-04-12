@@ -15,8 +15,8 @@ def create_client(username):
 app = Ursina()
 # window.title = 'FPS online keyit'
 # window.fullscreen = False
-# window.borderless = False
-# window.exit_button.visible = True
+window.borderless = False
+window.exit_button.visible = True
 # window.show_ursina_splash = True
 # window.size = (650, 600)
 my_client = None

@@ -1,3 +1,4 @@
+import sys
 from pyexpat import model
 from random import random, randint
 from direct.actor.Actor import Actor
@@ -18,7 +19,8 @@ class Player(FirstPersonController):
         self.character = Character(position)
         self.modController = 1
         self.clientCallback = clientCallback
-        self.cubeModel = createMyCube(position.x, position.z, 50, color.black)
+        self.cubeModel = createMyCube(position.x, position.z, 25, color.black)
+        self.cubeModel.visible_setter(False)
         self.cubeModel.y+= 10
         super().__init__(
             position=position,
@@ -81,6 +83,8 @@ class Player(FirstPersonController):
                 self.switch_weapon()
         except ValueError:
             pass
+        if key == Keys.escape:
+            sys.exit()
         if key == '1' and self.modController == 1:
             self.curr_weapon = self.gun.index(self.ak47)
             self.switch_weapon()
@@ -165,22 +169,46 @@ class Player(FirstPersonController):
             self.bullet.update()  # Cập nhật vị trí của viên đạn
         # self.healthbar.scale_x = self.health / 100 * self.healthbar_size.x
         if self.healthbar.value <= 0:
-            if not self.death_message_shown:
-                self.death()
+            self.ndk_death()
         else:
             super().update()
+        
+        
         if held_keys['w'] or held_keys['a'] or held_keys['d'] or held_keys['s']:
-            self.cubeModel.position = self.world_position
+            self.cubeModel.x_setter(self.world_position.x)
+            self.cubeModel.z_setter(self.world_position.z)
             if self.walksound.volume != 1:
                 self.walksound.volume += .1
             
         if not held_keys['w'] and not held_keys['a'] and not held_keys['d'] and not held_keys['s']:
             self.walksound.volume = 0
+        
+        # self.moveCopyModel()   
+        hit_info = self.cubeModel.intersects()
+        if hit_info.hit and hit_info.entity.position != Vec3(0,0,0):
+            if held_keys['w']:
+                self.world_position -= self.forward*2
+            if held_keys['s']:
+                self.world_position += self.forward*2
+            if held_keys['a']:
+                self.world_position += self.right*2
+            if held_keys['d']:
+                self.world_position -= self.right*2
+                
+            self.cubeModel.x_setter(self.world_position.x)
+            self.cubeModel.z_setter(self.world_position.z)
             
-        # hit_info = self.cubeModel.intersects()
-        # if hit_info.hit and hit_info.entity.position != Vec3(0,0,0):
-        #     self.world_position = hit_info.world_point
-            
+        
+    
+    def moveCopyModel(self):
+        if held_keys[Keys.up_arrow]:
+            self.cubeModel.y += 1
+        if held_keys[Keys.down_arrow]:
+            self.cubeModel.y -= 1
+        if held_keys[Keys.left_arrow]:
+            self.scale_x -= 1
+        if held_keys[Keys.right_arrow]:
+            self.scale_x += 1
             
     def getClass(self):
         return self.__class__
