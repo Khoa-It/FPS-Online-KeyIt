@@ -48,16 +48,21 @@ def moveObject(object):
     if not object:
         return
     if held_keys['a']:
-        object.x-=1
+        object.x-=.01
     if held_keys['d']:
-        object.x+=1
+        object.x+=.01
     if held_keys['w']:
-        object.y+=1
+        object.y+=.01
     if held_keys['s']:
-        object.y-=1
+        object.y-=.01
     if held_keys[Keys.up_arrow]:
-        object.z+=1
+        object.scale_y+=.01
     if held_keys[Keys.down_arrow]:
-        object.z-=1
+        object.scale_y-=.01
+    if held_keys[Keys.left_arrow]:
+        object.scale_x-=.01
+    if held_keys[Keys.right_arrow]:
+        object.scale_x+=.01
     if held_keys['space']:
-        print(object.position)
+        print('position',object.position)
+        print('scale',object.scale)

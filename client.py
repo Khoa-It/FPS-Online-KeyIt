@@ -1,4 +1,5 @@
 from ursinanetworking import *
+from ursina import *
 from Bullet import Bullet
 from ChatMessage import ChatMessage
 from OtherBullet import OtherBullet
@@ -136,13 +137,21 @@ class MyClient:
     def input(self,key):
         
         if key == Keys.enter:
-            if self.chatMessage.inputText.text != '':
+            if self.chatMessage.inputText.position == Vec3(0, -1, 0):
+                self.chatMessage.inputText.position = Vec3(0, -0.43, 0)
+                self.player.disable()
+                self.chatMessage.inputText.active=True
+                
+            if self.chatMessage.inputText.text != '' and self.chatMessage.inputText.position == Vec3(0, -0.43, 0):
                 self.client.send_message('messageFromClient',
                                     {
                                         'username': self.player_info['username'],
                                         'message': self.chatMessage.inputText.text
                                     }
                 )
+                self.chatMessage.inputText.position = Vec3(0, -1, 0)
+                self.chatMessage.inputText.active=False
+                self.player.enable()
         if held_keys['a'] or held_keys['s'] or held_keys['d'] or held_keys['w']:
             self.client.send_message('updatePosition',self.player.model.world_position)
             self.client.send_message('updateRotation', self.player.model.world_rotation)

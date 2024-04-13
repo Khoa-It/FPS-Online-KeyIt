@@ -1,6 +1,6 @@
 from ursina import *
 from CustomLib import *
-from Userform import Userform
+from Login import LoginForm
 from client import MyClient
 from Map import Map
 
@@ -8,21 +8,22 @@ from Map import Map
 
 def create_client(username):
     global my_client
-    my_client = MyClient(username,'192.168.1.7',6000, Vec3(0,1.4,0))
-    # my_client = MyClient(username,'localhost',6000, Vec3(0,1.4,0))
+    
+    # my_client = MyClient(username,'192.168.1.7',6000, Vec3(0,1.4,0))
+    my_client = MyClient(username,'localhost',6000, Vec3(0,1.4,0))
     
 
 app = Ursina()
 # window.title = 'FPS online keyit'
 # window.fullscreen = False
-window.borderless = False
-window.exit_button.visible = True
+# window.borderless = False
+# window.exit_button.visible = True
 # window.show_ursina_splash = True
 # window.size = (650, 600)
 my_client = None
-Userform([create_client])
 Sky()
 my_map = Map()
+LoginForm([create_client])
 
 def input(key):
     if key == Keys.escape:
@@ -36,6 +37,7 @@ def update():
         if len(my_client.other_bullet) > 0:
             for bullet in my_client.other_bullet:
                 bullet.update()
+        my_client.chatMessage.scrollcustom()
         
             
             

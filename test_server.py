@@ -8,8 +8,8 @@ from player import Player
 from server import MyServer
 
 app = Ursina()
-server = MyServer('192.168.1.7', 6000)
-# server = MyServer('localhost', 6000)
+# server = MyServer('192.168.1.7', 6000)
+server = MyServer('localhost', 6000)
 
 # Sky()
 # my_map = Map()

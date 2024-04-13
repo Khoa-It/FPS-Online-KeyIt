@@ -94,7 +94,8 @@ class Player(FirstPersonController):
         if key == 'left mouse down' and self.modController == 1:
             self.shootBullet()
         if key == 'space':
-            self.jump()
+            # self.jump()
+            pass
         if key == 'r':
             self.modController = 1
             self.ndk_switch_mode(self.modController)
@@ -123,6 +124,7 @@ class Player(FirstPersonController):
             self.character.running_entity.rotation_y = 270
         if key == Keys.enter:
             print('vi tri nguoi choi:', self.world_position)
+            
 
 
     def ndk_death(self):
@@ -172,7 +174,6 @@ class Player(FirstPersonController):
             self.ndk_death()
         else:
             super().update()
-        
         
         if held_keys['w'] or held_keys['a'] or held_keys['d'] or held_keys['s']:
             self.cubeModel.x_setter(self.world_position.x)
