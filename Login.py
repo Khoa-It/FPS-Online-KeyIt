@@ -1,9 +1,9 @@
-from tkinter import Tk, Label, Entry, Button, Canvas, font
+from tkinter import Tk, Label, Entry, Button, Canvas, font, messagebox
 from PIL import ImageTk, Image
 import webbrowser
 
-
 from ursina import Func
+
 
 class LoginForm:
     def __init__(self, callback):
@@ -21,13 +21,13 @@ class LoginForm:
         win_height = 520 + 100
 
         # Tính toán vị trí để cửa sổ xuất hiện ở giữa màn hình
-        x_position = (screen_width - win_width) // 2 
+        x_position = (screen_width - win_width) // 2
         y_position = (screen_height - win_height) // 2
 
         self.win.geometry(f'{win_width}x{win_height}+{x_position}+{y_position}')
-        
+
         self.win.overrideredirect(True)
-        
+
         self.win['bg'] = '#233657'
 
         # Chèn ảnh
@@ -97,9 +97,18 @@ class LoginForm:
         text_y = 140
         label.create_text(text_x, text_y, text='Enter your name', font=custom_font, fill='white')
 
+        # Tạo textbox cho IP room (không bắt buộc)
+        self.ipTb = Entry(self.win, width=20, font=('Times New Roman', 16))
+        self.ipTb.place(x=170, y=330)
+
+        # Vẽ văn bản "Enter IP room" trên Canvas
+        text_x = 270
+        text_y = 250
+        label.create_text(text_x, text_y, text='Nhập IP phòng (nếu có)', font=custom_font, fill='white')
+
         # Khởi tạo nút Start
         startBtn = Button(self.win, text='Start', fg='#233657', width=15, command=self.submit_username)
-        startBtn.place(x=225, y=330)
+        startBtn.place(x=225, y=380)
 
         # Chèn ảnh
         # Load hình ảnh từ đường dẫn
@@ -182,18 +191,27 @@ class LoginForm:
     def open_twitter(self):
         webbrowser.open_new("https://youtube.com")
 
-
     def submit_username(self):
         username = self.nameTb.get()
-        self.setter_usname(username)
-        self.win.destroy()  # Đóng cửa sổ sau khi nhấn nút "Submit"
+        ip_room = self.ipTb.get()  # Lấy giá trị từ trường nhập IP room
+
+        # Kiểm tra nếu người dùng đã nhập tên người dùng
+        if username.strip():
+            # Gọi hàm callback và truyền tên người dùng và IP room (có thể là chuỗi rỗng)
+            self.callback[0]((username, ip_room))
+            self.win.destroy()  # Đóng cửa sổ sau khi nhấn nút "Submit"
+        else:
+            # Hiển thị cảnh báo nếu tên người dùng không được nhập
+            messagebox.showwarning("Warning", "Vui lòng nhập tên người chơi.")
     def setter_usname(self, username):
         self.callback[0](username)
 
-def create_client(username):
-    print(f"Creating client for user: {username}")
+
+def create_client(data):
+    username, ip_room = data
+    print(f"Creating client for user: {username}, IP room: {ip_room}")
+
 
 def open_login_window(callback):
     LoginForm(callback)
-
 
