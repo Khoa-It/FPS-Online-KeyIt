@@ -1,12 +1,12 @@
 from ursinanetworking import *
 from ursina import *
-from Bullet import Bullet
-from ChatMessage import ChatMessage
-from OtherBullet import OtherBullet
-from OtherPlayer import OtherPlayer
+from modules.Bullet import Bullet
+from modules.ChatMessage import ChatMessage
+from modules.OtherBullet import OtherBullet
+from modules.OtherPlayer import OtherPlayer
 from Userform import Userform
-from player import Player
-from RandomPosition import *
+from modules.player import Player
+from data.RandomPosition import *
 
 class MyClient:
     def __init__(self, username, ip, port , start_position):

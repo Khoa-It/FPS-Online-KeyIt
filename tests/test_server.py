@@ -1,7 +1,7 @@
 from ursina import *
-from CustomLib import *
-from ipLibrary import *
-from server import MyServer
+from helpers.CustomLib import *
+from helpers.ipLibrary import *
+from networks.server import MyServer
 
 app = Ursina()
 my_ipv4 = get_ipv4_address()

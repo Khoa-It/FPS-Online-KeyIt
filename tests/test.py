@@ -1,9 +1,9 @@
 from ursina import *
 
-from CustomLib import createMyCube, moveObject
-from Map import Map
-from OtherPlayer import OtherPlayer
-from player import Player
+from helpers.CustomLib import createMyCube, moveObject
+from data.Map import Map
+from modules.OtherPlayer import OtherPlayer
+from modules.player import Player
 
 app = Ursina()
 Map()

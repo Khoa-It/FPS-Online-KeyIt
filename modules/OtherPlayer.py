@@ -1,6 +1,6 @@
 from ursina import *
-from Character import Character
-from CustomHearbar import CustomHealthBar
+from modules.Character import Character
+from modules.CustomHearbar import CustomHealthBar
 class OtherPlayer(Entity):
     def __init__(self, position):
         self.pos = position

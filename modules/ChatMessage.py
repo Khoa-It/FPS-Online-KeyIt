@@ -1,6 +1,6 @@
 from ursina import *
 
-from CustomLib import moveObject
+from helpers.CustomLib import moveObject
 
 
 class ChatMessage:
