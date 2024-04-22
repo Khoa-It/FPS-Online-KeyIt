@@ -5,14 +5,4 @@
   <img src="https://img.shields.io/github/license/raudio-project/raudio-server?color=red">
   <img src="https://img.shields.io/github/issues/raudio-project/raudio-server?color=green">
 </p>
-# FPS-Online
-This project is an online fps game written in Python. Currently, it is just a simple gaming application and we can develop it further in the near future.
-## Setting up a development environment
-To install and run the application, follow these steps:
-Downloading the project:
-Clone the repository with the following:
-```
-git status
-git add
-git commit
-```
+
