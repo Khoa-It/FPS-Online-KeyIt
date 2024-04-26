@@ -32,7 +32,7 @@ class LoginForm:
 
         # Chèn ảnh
         # Load hình ảnh từ đường dẫn
-        image_path = "../asset/static/login_gui/background_33pt.png"
+        image_path = "asset/static/login_gui/background_33pt.png"
         original_image = Image.open(image_path)
 
         # Điều chỉnh kích thước ảnh
@@ -97,22 +97,13 @@ class LoginForm:
         text_y = 140
         label.create_text(text_x, text_y, text='Enter your name', font=custom_font, fill='white')
 
-        # Tạo textbox cho IP room (không bắt buộc)
-        self.ipTb = Entry(self.win, width=20, font=('Times New Roman', 16))
-        self.ipTb.place(x=170, y=330)
-
-        # Vẽ văn bản "Enter IP room" trên Canvas
-        text_x = 270
-        text_y = 250
-        label.create_text(text_x, text_y, text='Nhập IP phòng (nếu có)', font=custom_font, fill='white')
-
         # Khởi tạo nút Start
         startBtn = Button(self.win, text='Start', fg='#233657', width=15, command=self.submit_username)
         startBtn.place(x=225, y=380)
 
         # Chèn ảnh
         # Load hình ảnh từ đường dẫn
-        image_path = "../asset/static/login_gui/logo.jpg"
+        image_path = "asset/static/login_gui/logo.jpg"
         original_image = Image.open(image_path)
 
         # Điều chỉnh kích thước ảnh
@@ -128,7 +119,7 @@ class LoginForm:
         label.place(x=550, y=135)  # Điều chỉnh vị trí của nhãn
 
         # hinh 18+
-        image_path = "../asset/static/login_gui/18+.png"
+        image_path = "asset/static/login_gui/18+.png"
         original_image = Image.open(image_path)
         new_size = (40, 40)
         resized_image = original_image.resize(new_size)
@@ -139,7 +130,7 @@ class LoginForm:
         label.place(x=50, y=50)
 
         # logo fb
-        image_path = "../asset/static/login_gui/fb.png"
+        image_path = "asset/static/login_gui/fb.png"
         original_image = Image.open(image_path)
         new_size = (30, 30)
         resized_image = original_image.resize(new_size)
@@ -150,7 +141,7 @@ class LoginForm:
         label.place(x=(win_width - fanpageTxt.winfo_reqwidth()) // 2 - 35, y=18)
 
         # logo twitter
-        image_path = "../asset/static/login_gui/twitter.png"
+        image_path = "asset/static/login_gui/twitter.png"
         original_image = Image.open(image_path)
         new_size = (30, 30)
         resized_image = original_image.resize(new_size)
@@ -161,7 +152,7 @@ class LoginForm:
         label.place(x=(win_width - fanpageTxt.winfo_reqwidth()) // 2 + 200 - 35, y=18)
 
         # logo Home
-        image_path = "../asset/static/login_gui/home.png"
+        image_path = "asset/static/login_gui/home.png"
         original_image = Image.open(image_path)
         new_size = (30, 30)
         resized_image = original_image.resize(new_size)
@@ -193,12 +184,11 @@ class LoginForm:
 
     def submit_username(self):
         username = self.nameTb.get()
-        ip_room = self.ipTb.get()  # Lấy giá trị từ trường nhập IP room
 
         # Kiểm tra nếu người dùng đã nhập tên người dùng
         if username.strip():
             # Gọi hàm callback và truyền tên người dùng và IP room (có thể là chuỗi rỗng)
-            self.callback[0](username, ip_room)
+            self.callback[0](username)
             self.win.destroy()  # Đóng cửa sổ sau khi nhấn nút "Submit"
         else:
             # Hiển thị cảnh báo nếu tên người dùng không được nhập
@@ -208,8 +198,8 @@ class LoginForm:
 
 
 def create_client(data):
-    username, ip_room = data
-    print(f"Creating client for user: {username}, IP room: {ip_room}")
+    username = data
+    print(f"Creating client for user: {username}")
 
 
 def open_login_window(callback):

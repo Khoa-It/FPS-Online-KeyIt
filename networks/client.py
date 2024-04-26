@@ -4,7 +4,7 @@ from modules.Bullet import Bullet
 from modules.ChatMessage import ChatMessage
 from modules.OtherBullet import OtherBullet
 from modules.OtherPlayer import OtherPlayer
-from Userform import Userform
+# from Userform import Userform
 from modules.player import Player
 from data.RandomPosition import *
 

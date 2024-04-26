@@ -1,8 +1,8 @@
 from ursina import *
 from helpers.CustomLib import *
 from data.CubePositionData import listCubePosition
-from WallPositionData import listWallPosition
-from TreePositionData import listTreePosition
+from data.WallPositionData import listWallPosition
+from data.TreePositionData import listTreePosition
 from data.HousePositionData import listHousePosition
 # create a new class for Map
 

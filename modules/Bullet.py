@@ -1,7 +1,6 @@
 from ursina import *
 
-from Character import Character
-from OtherPlayer import OtherPlayer
+# from OtherPlayer import OtherPlayer
 
 
 

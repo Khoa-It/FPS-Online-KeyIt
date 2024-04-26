@@ -1,9 +1,11 @@
 from ursina import *
 from direct.actor.Actor import Actor
+
 class Character:
     def __init__(self, myPosition):
         self.stand_entity = Entity()
-        self.stand_actor = Actor(f'asset/animation/cutegirl/stand.gltf')
+        self.stand_actor = Actor("asset/animation/cutegirl/running.gltf")
+
         self.stand_actor.reparent_to(self.stand_entity)
         self.stand_actor.loop('stand')
         self.stand_entity.scale = .7
