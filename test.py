@@ -7,8 +7,7 @@ from modules.player import Player
 
 app = Ursina()
 Map()
-my_cube = createMyCube(0,0,20, color.red)
-EditorCamera()
+Player()
 window.borderless = False
 
 

@@ -8,6 +8,7 @@ from data.Map import Map
 def create_client(username):
     global my_client
     my_client = MyClient(username,'localhost',6000, Vec3(0,1.4,0))
+    # my_client = MyClient(username,'localhost',6000, Vec3(-39, 10, 10))
     # my_client = MyClient(username,'192.168.1.7',6000, Vec3(0,1.4,0))
     # my_client = MyClient(username, ip, 6000, Vec3(0, 1.4, 0))
 

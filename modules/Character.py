@@ -27,7 +27,7 @@ class Character:
         self.stand_entity.collider.enabled = True
         
     def log_out(self):
-        destroy(self.stand_entity)
-        destroy(self.running_entity)
+        self.stand_entity.visible = False
+        self.running_entity.visible = False
     def getPos(self):
         return self.stand_entity.world_position

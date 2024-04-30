@@ -46,13 +46,13 @@ def createHouse(x=0, z=0, corner=0) -> Entity:
 
 def moveObject(object):
     if held_keys['a']:
-        object.x-=1
+        object.x-=.001
     if held_keys['d']:
-        object.x+=1
+        object.x+=.001
     if held_keys['w']:
-        object.z+=1
+        object.y+=.001
     if held_keys['s']:
-        object.z-=1
+        object.y-=.001
     if held_keys[Keys.up_arrow]:
         object.scale_y+=.1
     if held_keys[Keys.down_arrow]:

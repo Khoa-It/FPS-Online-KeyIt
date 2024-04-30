@@ -5,6 +5,7 @@ from direct.actor.Actor import Actor
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 
+from modules.BulletManage import BulletManage
 from modules.Bullet import Bullet
 from modules.Character import Character
 from modules.CustomHearbar import CustomHealthBar
@@ -16,6 +17,7 @@ from helpers.CustomLib import createMyCube
 # arm_texture_path = 'asset/static/gun/Hand_D.png'
 class Player(FirstPersonController):
     def __init__(self, position, clientCallback, ignorePosition):
+        
         self.character = Character(position)
         self.modController = 1
         self.clientCallback = clientCallback
@@ -32,6 +34,7 @@ class Player(FirstPersonController):
             # collider="box",
             speed=100
         )
+        self.bulletNotification = BulletManage()
         self.ignorePosition = ignorePosition
         self.walksound = Audio('asset/static/sound_effect/running-sounds.mp3', loop = True)
         self.walksound.volume = 0
@@ -66,7 +69,12 @@ class Player(FirstPersonController):
         camera.z = -60
         # switch to third controller
         self.ndk_switch_mode(1)
+        self.print_position_for_test()
+        
 
+    def print_position_for_test(self):
+        print('class player - position',self.position)
+        print('class player - world position',self.world_position)
     def switch_weapon(self):
         for i,v in enumerate(self.gun):
             if i == self.curr_weapon:
@@ -99,6 +107,9 @@ class Player(FirstPersonController):
         if key == 'r':
             self.modController = 1
             self.ndk_switch_mode(self.modController)
+        if key == 'f':
+            if self.bulletNotification.num == 0:
+                self.bulletNotification.setnumOfBullet(5)
         if key == 't':
             self.modController = 3
             self.ndk_switch_mode(self.modController)
@@ -122,6 +133,8 @@ class Player(FirstPersonController):
             self.character.running_entity.visible = True
             self.model = self.character.running_entity
             self.character.running_entity.rotation_y = 270
+        if held_keys['a'] or held_keys['s'] or held_keys['d'] or held_keys['w']:
+            self.print_position_for_test()
         if key == Keys.enter:
             print('vi tri nguoi choi:', self.world_position)
             
@@ -214,7 +227,9 @@ class Player(FirstPersonController):
     def getClass(self):
         return self.__class__
     def shootBullet(self):
-        self.clientCallback[0](self.character.getPos()+(0,4,0), self.gun[self.curr_weapon].forward)
-        self.bullet = Bullet(self.gun[self.curr_weapon].world_position, direction=self.gun[self.curr_weapon].forward, listObjectIgnore=[*self.gun, self.character.stand_entity, self.character.running_entity, self.character.stand_actor, self.character.running_actor],getPlayerClass=self.getClass ,listClientCallBack= self.clientCallback, ignorePosition=self.ignorePosition)
-        self.bullet.shoot()
+        if(self.bulletNotification.num > 0):
+            self.clientCallback[0](self.character.getPos()+(0,4,0), self.gun[self.curr_weapon].forward)
+            self.bullet = Bullet(self.gun[self.curr_weapon].world_position, direction=self.gun[self.curr_weapon].forward, listObjectIgnore=[*self.gun, self.character.stand_entity, self.character.running_entity, self.character.stand_actor, self.character.running_actor],getPlayerClass=self.getClass ,listClientCallBack= self.clientCallback, ignorePosition=self.ignorePosition)
+            self.bullet.shoot()
+            self.bulletNotification.setnumOfBullet(self.bulletNotification.num-1)
         
