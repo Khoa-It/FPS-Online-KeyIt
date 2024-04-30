@@ -2,13 +2,13 @@ from venv import create
 from ursina import *
 from direct.actor.Actor import Actor
 from ursina.prefabs.first_person_controller import FirstPersonController
-from ChatMessage import ChatMessage
-from CustomLib import *
-from OtherPlayer import OtherPlayer
+from modules.ChatMessage import ChatMessage
+from helpers.CustomLib import *
+from modules.OtherPlayer import OtherPlayer
 from Userform import Userform
-from client import MyClient
-from player import Player
-from Map import Map
+from networks.client import MyClient
+from modules.player import Player
+from data.Map import Map
 
 def create_player():
     global player

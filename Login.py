@@ -97,15 +97,6 @@ class LoginForm:
         text_y = 140
         label.create_text(text_x, text_y, text='Enter your name', font=custom_font, fill='white')
 
-        # Tạo textbox cho IP room (không bắt buộc)
-        self.ipTb = Entry(self.win, width=20, font=('Times New Roman', 16))
-        self.ipTb.place(x=170, y=330)
-
-        # Vẽ văn bản "Enter IP room" trên Canvas
-        text_x = 270
-        text_y = 250
-        label.create_text(text_x, text_y, text='Nhập IP phòng (nếu có)', font=custom_font, fill='white')
-
         # Khởi tạo nút Start
         startBtn = Button(self.win, text='Start', fg='#233657', width=15, command=self.submit_username)
         startBtn.place(x=225, y=380)
@@ -193,23 +184,22 @@ class LoginForm:
 
     def submit_username(self):
         username = self.nameTb.get()
-        ip_room = self.ipTb.get()  # Lấy giá trị từ trường nhập IP room
 
         # Kiểm tra nếu người dùng đã nhập tên người dùng
         if username.strip():
             # Gọi hàm callback và truyền tên người dùng và IP room (có thể là chuỗi rỗng)
-            self.callback[0]((username, ip_room))
+            self.callback[0](username)
             self.win.destroy()  # Đóng cửa sổ sau khi nhấn nút "Submit"
         else:
             # Hiển thị cảnh báo nếu tên người dùng không được nhập
             messagebox.showwarning("Warning", "Vui lòng nhập tên người chơi.")
-    def setter_usname(self, username):
-        self.callback[0](username)
+    # def setter_usname(self, username):
+    #     self.callback[0](username)
 
 
 def create_client(data):
-    username, ip_room = data
-    print(f"Creating client for user: {username}, IP room: {ip_room}")
+    username = data
+    print(f"Creating client for user: {username}")
 
 
 def open_login_window(callback):
