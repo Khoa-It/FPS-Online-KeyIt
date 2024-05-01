@@ -26,14 +26,12 @@ class MyServer:
             def onClientConnected(Client):
                 print(f"{Client.id} join game")
                 self.notifycation_content.text += "\n" + f"{Client.id} join game"
-               
                 self.easy.create_replicated_variable(Client.id,
                         {"id": Client.id,
                          'position': (0,3.5,0),
                          'rotation': (0,0,0),
                          'status': 'stand',
                          }
-                         
                          )
                 Client.send_message('GetID', Client.id)
                 self.server.broadcast('newPlayerLogin',
@@ -86,7 +84,6 @@ class MyServer:
             def player_shot(Client, content):
                 print('server recieved player shot signal:', content)
                 self.server.broadcast('decrease_hp', content)
-                
 
             self.start_server = False
             self.update_server = True

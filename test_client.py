@@ -40,6 +40,7 @@ def update():
             for bullet in my_client.other_bullet:
                 bullet.update()
         my_client.chatMessage.scrollcustom()
+        # my_client.update()
 
 
 def input(key):

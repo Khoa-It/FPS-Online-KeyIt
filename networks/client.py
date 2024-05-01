@@ -1,5 +1,6 @@
 from ursinanetworking import *
 from ursina import *
+from helpers.CustomLib import moveObject
 from modules.Bullet import Bullet
 from modules.ChatMessage import ChatMessage
 from modules.OtherBullet import OtherBullet
@@ -10,6 +11,7 @@ from data.RandomPosition import *
 
 class MyClient:
     def __init__(self, username, ip, port , start_position):
+        self.showInfo = None
         self.ip = ip
         self.port = port
         self.list_other_players:list[OtherPlayer] = []
@@ -35,6 +37,7 @@ class MyClient:
                 self.list_other_players.append(OtherPlayer((0,3.5,0)))
                 self.list_other_players[item].setPos(self.easy.replicated_variables[item].content['position'])    
             self.list_other_players[content].logout()
+            self.showInfo = Text(text=f'{username} id: {content}', parent = camera.ui, position = Vec3(-0.848993, 0.394998, 0), color = color.rgb(140, 3, 252))
             
         @self.client.event
         def newPlayerLogin(content):
@@ -119,6 +122,7 @@ class MyClient:
                     print('so mau con lai cua nguoi choi la:', item.healthbar.value)
                     if item.healthbar.value <= 0:
                         item.logout()
+            count += 1
                             
     def getListOtherPlayers(self):
         return list(filter(lambda x: self.list_other_players.index(x) != self.player_info['id'], self.list_other_players))
@@ -150,6 +154,9 @@ class MyClient:
             self.client.send_message('updateStatus', 'running')
         if not held_keys['a'] and not held_keys['s'] and not held_keys['d'] and not held_keys['w']:
             self.client.send_message('updateStatus', 'stand')
+            
+    def update(self):
+        moveObject(self.showInfo)
         
             
                 
