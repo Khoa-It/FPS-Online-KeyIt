@@ -32,33 +32,20 @@ class MyClient:
         @self.client.event
         def GetID(content):
             self.player_info['id'] = content
-            # print(self.player.position)
-            # print(self.player.world_position)
-            # print(playerRandomPositions[content])
-            # self.player.position = playerRandomPositions[self.player_info['id']]
-            # print('recieve id player: ', self.player_info['id'])
-            # print('-------ndk log amount of player-------') 
-            # self.player.world_position = playerRandomPositions[content]
-            # self.client.send_message('updatePosition',self.player.model.world_position)
+            self.player.position = playerRandomPositions[int(content)]
+            self.client.send_message('updatePosition',playerRandomPositions[int(content)])
             for item in self.easy.replicated_variables:
-                # print(item)
                 self.list_other_players.append(OtherPlayer((0,3.5,0)))
-                self.list_other_players[item].setPos(self.easy.replicated_variables[item].content['position'])
-                # print(self.easy.replicated_variables[item].content['position'])
-                
+                self.list_other_players[item].setPos(self.easy.replicated_variables[item].content['position'])    
             self.list_other_players[content].logout()
-            # print(self.otherbullet)
             
-        
         @self.client.event
         def newPlayerLogin(content):
             # print('-------ndk log new user login-------')
             # print(content)
             if content['id'] != self.player_info['id']:
                 self.list_other_players.append(OtherPlayer((0,3.5,0)))
-                
-            
-        
+ 
         @self.client.event
         def newMessage(content):
             # print(content)
@@ -100,14 +87,13 @@ class MyClient:
                     self.list_other_players[Content.content['id']].stand()
                 else:
                     self.list_other_players[Content.content['id']].running()
-
-        
+     
         @self.easy.event
         def onReplicatedVariableRemoved(Content):    
             # print('-------ndk log one syn var remove-------')
             # print(Content)
             pass
-        
+
     def updateUsername(self,name):
         self.player_info['username'] = name
         self.chatMessage.inputText.y = -.43
@@ -136,6 +122,7 @@ class MyClient:
                     print('so mau con lai cua nguoi choi la:', item.healthbar.value)
                     if item.healthbar.value <= 0:
                         item.logout()
+            count += 1
                             
     def getListOtherPlayers(self):
         return list(filter(lambda x: self.list_other_players.index(x) != self.player_info['id'], self.list_other_players))

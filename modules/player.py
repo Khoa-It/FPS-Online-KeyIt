@@ -5,17 +5,15 @@ from direct.actor.Actor import Actor
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 
+from modules.BulletManage import BulletManage
 from modules.Bullet import Bullet
 from modules.Character import Character
 from modules.CustomHearbar import CustomHealthBar
 from helpers.CustomLib import createMyCube
 
-# gun_model_path = 'asset/static/gun/Mark23.fbx'
-# gun_texture_path = 'asset/static/gun/Mark23_D.png'
-# glove_texture_path = 'asset/static/gun/Glove_D.png'
-# arm_texture_path = 'asset/static/gun/Hand_D.png'
 class Player(FirstPersonController):
     def __init__(self, position, clientCallback, ignorePosition):
+        
         self.character = Character(position)
         self.modController = 1
         self.clientCallback = clientCallback
@@ -32,8 +30,10 @@ class Player(FirstPersonController):
             # collider="box",
             speed=100
         )
+        self.bulletNotification = BulletManage()
         self.ignorePosition = ignorePosition
         self.walksound = Audio('asset/static/sound_effect/running-sounds.mp3', loop = True)
+        self.reload = Audio('asset/static/sound_effect/reload.mp3', loop=False, autoplay=False)
         self.walksound.volume = 0
         self.walksound.autoplay = True
         self.bullet = None
@@ -43,7 +43,6 @@ class Player(FirstPersonController):
                            texture='asset/static/gun/gun_blue_violet_texture.png',
                            scale=.18,
                            position=(1, -6, 0),
-                           damage=randint(70, 100),
                            collider = 'box',
                            visible=False)
         self.pistol = Entity(parent=camera,
@@ -51,7 +50,6 @@ class Player(FirstPersonController):
                                     texture='asset/static/gun/RenderResult.png',
                                     scale=0.03,  # Chỉnh sửa kích thước
                                     position=(8, -10, 24),
-                                    damage=randint(40, 90),
                                     visible=False
                                     )
 
@@ -66,7 +64,12 @@ class Player(FirstPersonController):
         camera.z = -60
         # switch to third controller
         self.ndk_switch_mode(1)
+        self.print_position_for_test()
+        
 
+    def print_position_for_test(self):
+        print('class player - position',self.position)
+        print('class player - world position',self.world_position)
     def switch_weapon(self):
         for i,v in enumerate(self.gun):
             if i == self.curr_weapon:
@@ -85,12 +88,15 @@ class Player(FirstPersonController):
             pass
         if key == Keys.escape:
             sys.exit()
+        #súng 1 là ak
         if key == '1' and self.modController == 1:
             self.curr_weapon = self.gun.index(self.ak47)
             self.switch_weapon()
+        # súng 2 là pistol
         if key == '2' and self.modController == 1:
             self.curr_weapon = self.gun.index(self.pistol)
             self.switch_weapon()
+        # bắn bằng trái chuột
         if key == 'left mouse down' and self.modController == 1:
             self.shootBullet()
         if key == 'space':
@@ -99,6 +105,11 @@ class Player(FirstPersonController):
         if key == 'r':
             self.modController = 1
             self.ndk_switch_mode(self.modController)
+        #nạp lại đạn
+        if key == 'f':
+            if self.bulletNotification.num < 5:
+                self.bulletNotification.setnumOfBullet(5)
+                self.reload.play()
         if key == 't':
             self.modController = 3
             self.ndk_switch_mode(self.modController)
@@ -122,20 +133,20 @@ class Player(FirstPersonController):
             self.character.running_entity.visible = True
             self.model = self.character.running_entity
             self.character.running_entity.rotation_y = 270
+        if held_keys['a'] or held_keys['s'] or held_keys['d'] or held_keys['w']:
+            self.print_position_for_test()
         if key == Keys.enter:
             print('vi tri nguoi choi:', self.world_position)
 
 
 
     def ndk_death(self):
-        self.death_message_shown = True
         self.cursor.color = color.rgb(0, 0, 0, a=0)  # Ẩn con trỏ
         for gun in self.gun:
             gun.disable()  # Ẩn súng
-        # self.healthbar.enabled = False  # Ẩn thanh máu
-        # self.healthbar_bg.enabled = False  # Ẩn nền thanh máu
         self.disable()  # Tắt bộ điều khiển
         Text(text="You are dead!", origin=Vec2(0, 0), scale=3)  # Hiển thị thông báo
+
 
     def ndk_switch_mode(self, controllerMode):
         if controllerMode == 3:
@@ -214,7 +225,9 @@ class Player(FirstPersonController):
     def getClass(self):
         return self.__class__
     def shootBullet(self):
-        self.clientCallback[0](self.character.getPos()+(0,4,0), self.gun[self.curr_weapon].forward)
-        self.bullet = Bullet(self.gun[self.curr_weapon].world_position, direction=self.gun[self.curr_weapon].forward, listObjectIgnore=[*self.gun, self.character.stand_entity, self.character.running_entity, self.character.stand_actor, self.character.running_actor],getPlayerClass=self.getClass ,listClientCallBack= self.clientCallback, ignorePosition=self.ignorePosition)
-        self.bullet.shoot()
+        if(self.bulletNotification.num > 0):
+            self.clientCallback[0](self.character.getPos()+(0,4,0), self.gun[self.curr_weapon].forward)
+            self.bullet = Bullet(self.gun[self.curr_weapon].world_position, direction=self.gun[self.curr_weapon].forward, listObjectIgnore=[*self.gun, self.character.stand_entity, self.character.running_entity, self.character.stand_actor, self.character.running_actor],getPlayerClass=self.getClass ,listClientCallBack= self.clientCallback, ignorePosition=self.ignorePosition)
+            self.bullet.shoot()
+            self.bulletNotification.setnumOfBullet(self.bulletNotification.num-1)
         

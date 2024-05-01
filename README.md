@@ -1,6 +1,12 @@
 <p align="center">This's Official Website Of The Game (<a href="https://fpsonline.github.io/">https://fpsonline.github.io/</a>)</p>
 <h1 align="center">How to install and run the game</h1>
 <h1 align="center"><img src="https://github.com/Khoa-It/FPS-Online-KeyIt/assets/104067198/2bd2dbc4-70e6-49c9-bb0e-ad5f112f7d18" alt="logo" width="35%"></h1>
+<h5 align="center"><i align="center">Online fps game application.</i></h5>
+<p align="center">
+  <img src="https://img.shields.io/badge/release-coming%20soon-blue">
+  <img src="https://img.shields.io/github/license/raudio-project/raudio-server?color=red">
+  <img src="https://img.shields.io/github/issues/raudio-project/raudio-server?color=green">
+</p>
 <h2>Step 1: Install Python3</h2>
 <p>Firstly, you need to install Python on your computer if you haven't already. You can download Python from the official Python website (<a href="https://www.python.org/">https://www.python.org/</a>) and install it following the instructions.</p>
 
@@ -28,10 +34,5 @@ $ pip3 install .
 
 <p>This is a brief description of how to install and run the FPS Online project. Refer to and follow the steps above to easily experience the project.</p>
 
-<h5 align="center"><i align="center">Online fps game application.</i></h5>
-<p align="center">
-  <img src="https://img.shields.io/badge/release-coming%20soon-blue">
-  <img src="https://img.shields.io/github/license/raudio-project/raudio-server?color=red">
-  <img src="https://img.shields.io/github/issues/raudio-project/raudio-server?color=green">
-</p>
+
 

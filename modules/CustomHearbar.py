@@ -15,7 +15,7 @@ class CustomHealthBar(HealthBar):
             self.position =  Vec3(-0.750326, 0.48, 0)
         if self.mode == 3:
             self.bar_color = color.pink
-            self.value = 50
+            self.value = 100
             self.text_entity.enable
             self.position = position
         
