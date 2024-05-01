@@ -1,1 +1,0 @@
-e:/Pycharm/game/FPS_Online_KeyIt/.venv/Scripts/python.exe e:/Pycharm/game/FPS_Online_KeyIt/ClientAudio2.py
