@@ -82,6 +82,14 @@ class MyClient:
             if content == self.player_info['id']:
                 self.player.healthbar.value -= 20
         
+        @self.client.event
+        def hearFromOtherClient(content):
+            self.openVoiceChat()
+        
+        @self.client.event
+        def stopHearFromOtherClient(content):
+            self.stopVoiceChat()
+        
         @self.easy.event
         def onReplicatedVariableCreated(Content):
             # print('-------ndk log new syn var created-------')
@@ -169,15 +177,20 @@ class MyClient:
             
         if key == '0':
             self.openVoiceChat()
+            self.client.send_message('openOtherVoiceChat', 'openAll')
+                
         if key == '9':
             self.stopVoiceChat()
+            self.client.send_message('stopOtherVoiceChat', 'stopAll')
             
     def openVoiceChat(self):
-        reactor.listenUDP(self.audioPort, StreamAudio(self.otherAudioPorts))
-        reactor.run()
+        if not reactor.running:
+            reactor.listenUDP(self.audioPort, StreamAudio(self.otherAudioPorts))
+            reactor.run()
         
     def stopVoiceChat(self):
-        reactor.stop()
+        if reactor.running:
+            reactor.stop()
 
             
                 

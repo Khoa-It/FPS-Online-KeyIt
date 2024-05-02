@@ -91,6 +91,14 @@ class MyServer:
             def player_shot(Client, content):
                 print('server recieved player shot signal:', content)
                 self.server.broadcast('decrease_hp', content)
+            
+            @self.server.event
+            def openOtherVoiceChat(Client, content):
+                self.server.broadcast('hearFromOtherClient', content)
+                
+            @self.server.event
+            def stopOtherVoiceChat(Client, content):
+                self.server.broadcast('stopHearFromOtherClient', content)
 
 
             self.start_server = False
