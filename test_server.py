@@ -5,8 +5,8 @@ from networks.server import MyServer
 
 app = Ursina()
 my_ipv4 = get_ipv4_address()
-server = MyServer('localhost', 6000)
-# server = MyServer(my_ipv4, 6000)
+# server = MyServer('localhost', 6000)
+server = MyServer(my_ipv4, 6000)
 def input(key):
     if key == Keys.escape:
         exit(0)

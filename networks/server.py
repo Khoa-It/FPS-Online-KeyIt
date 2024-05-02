@@ -15,6 +15,7 @@ class MyServer:
         self.messages = []
         self.notifycation = None
         self.notifycation_content = None
+        self.audioPort = 3000
 
     def handle(self):
         if self.start_server:
@@ -27,24 +28,27 @@ class MyServer:
             def onClientConnected(Client):
                 print(f"{Client.id} join game")
                 self.notifycation_content.text += "\n" + f"{Client.id} join game"
-
                 self.easy.create_replicated_variable(Client.id,
                         {"id": Client.id,
                          'position': (0,3.5,0),
                          'rotation': (0,0,0),
                          'status': 'stand',
+                         'audioPort': self.audioPort,
                          }
-
                          )
                 Client.send_message('GetID', Client.id)
+                Client.send_message('initAudioPort', self.audioPort)
                 self.server.broadcast('newPlayerLogin',
                     {
                         'id':Client.id,
                         'name':Client.name,
                         'position':(0,3.5,0),
+                        'port': self.audioPort,
                     }
                 )
                 Client.send_message('syncMessage',self.messages)
+                self.audioPort += 1
+                print('check easy', self.easy.replicated_variables)
 
             @self.server.event
             def onClientDisconnected(Client):

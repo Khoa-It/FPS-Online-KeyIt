@@ -6,11 +6,16 @@ from modules.OtherBullet import OtherBullet
 from modules.OtherPlayer import OtherPlayer
 # from Userform import Userform
 from modules.player import Player
+from twisted.internet import reactor
 from data.RandomPosition import *
 import pyaudio
 import threading
+
+from networks.streamAudio import StreamAudio
 class MyClient:
     def __init__(self, username, ip, port , start_position):
+        self.audioPort = 3000
+        self.otherAudioPorts = []
         self.ip = ip
         self.port = port
         self.list_other_players:list[OtherPlayer] = []
@@ -26,9 +31,7 @@ class MyClient:
         self.other_bullet:list[OtherBullet] = []
         self.time_start = time.time()
         Audio('asset/static/sound_effect/getready.ogg').play()
-        self.audio = pyaudio.PyAudio()
-        self.input_stream = None
-        self.is_recording = False
+        
         @self.client.event
         def GetID(content):
             self.player_info['id'] = content
@@ -37,7 +40,14 @@ class MyClient:
             for item in self.easy.replicated_variables:
                 self.list_other_players.append(OtherPlayer((0,3.5,0)))
                 self.list_other_players[item].setPos(self.easy.replicated_variables[item].content['position'])    
+                if item != content:
+                    self.otherAudioPorts.append((self.ip, self.easy.replicated_variables[item].content['audioPort']))
             self.list_other_players[content].logout()
+            print('check audio port', self.otherAudioPorts)
+            
+        @self.client.event
+        def initAudioPort(content):
+            self.audioPort = int(content)
             
         @self.client.event
         def newPlayerLogin(content):
@@ -45,6 +55,8 @@ class MyClient:
             # print(content)
             if content['id'] != self.player_info['id']:
                 self.list_other_players.append(OtherPlayer((0,3.5,0)))
+                self.otherAudioPorts.append((self.ip, content['port']))
+                print(self.otherAudioPorts)
  
         @self.client.event
         def newMessage(content):
@@ -154,6 +166,18 @@ class MyClient:
             self.client.send_message('updateStatus', 'running')
         if not held_keys['a'] and not held_keys['s'] and not held_keys['d'] and not held_keys['w']:
             self.client.send_message('updateStatus', 'stand')
+            
+        if key == '0':
+            self.openVoiceChat()
+        if key == '9':
+            self.stopVoiceChat()
+            
+    def openVoiceChat(self):
+        reactor.listenUDP(self.audioPort, StreamAudio(self.otherAudioPorts))
+        reactor.run()
+        
+    def stopVoiceChat(self):
+        reactor.stop()
 
             
                 
