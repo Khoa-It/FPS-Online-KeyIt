@@ -21,13 +21,13 @@ class MyServer:
         if self.start_server:
             self.server = UrsinaNetworkingServer(self.ip, self.port)
             self.easy = easyursinanetworking.EasyUrsinaNetworkingServer(self.server)
-            self.notifycation = Text(f"this is server with ip address: {self.ip}", position=Vec3(-0.25, 0.45, 0))
-            self.notifycation_content = Text("=========Log content============", position=Vec3(-0.85, 0.4, 0))
+            # self.notifycation = Text(f"this is server with ip address: {self.ip}", position=Vec3(-0.25, 0.45, 0))
+            # self.notifycation_content = Text("=========Log content============", position=Vec3(-0.85, 0.4, 0))
 
             @self.server.event
             def onClientConnected(Client):
                 print(f"{Client.id} join game")
-                self.notifycation_content.text += "\n" + f"{Client.id} join game"
+                # self.notifycation_content.text += "\n" + f"{Client.id} join game"
                 self.easy.create_replicated_variable(Client.id,
                         {"id": Client.id,
                          'position': (0,3.5,0),
@@ -53,14 +53,14 @@ class MyServer:
             @self.server.event
             def onClientDisconnected(Client):
                 print(f"{Client} leave game")
-                self.notifycation_content.text += "\n" + f"{Client.id} leave game"
+                # self.notifycation_content.text += "\n" + f"{Client.id} leave game"
                 self.easy.remove_replicated_variable_by_name(Client.id)
                 self.server.broadcast('existedClientDisConnected', Client.id)
 
             @self.server.event
             def messageFromClient(Client,message):
                 print(f"{message}")
-                self.notifycation_content.text += "\n" + f"chatmessage feature: {message}"
+                # self.notifycation_content.text += "\n" + f"chatmessage feature: {message}"
                 self.server.broadcast('newMessage',message)
 
             @self.server.event
@@ -94,10 +94,12 @@ class MyServer:
             
             @self.server.event
             def openOtherVoiceChat(Client, content):
+                print(content)
                 self.server.broadcast('hearFromOtherClient', content)
                 
             @self.server.event
             def stopOtherVoiceChat(Client, content):
+                print(content)
                 self.server.broadcast('stopHearFromOtherClient', content)
 
 

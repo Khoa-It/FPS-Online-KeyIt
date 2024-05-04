@@ -11,10 +11,15 @@ from data.RandomPosition import *
 import pyaudio
 import threading
 
-from networks.streamAudio import StreamAudio
+from networks.streamAudioClientUDP import AudioStreamClient
+
+
 class MyClient:
     def __init__(self, username, ip, port , start_position):
-        self.audioPort = 3000
+        self.isStreaming = False
+        self.audioStreamClient = None
+        self.startStreamThread = None
+        self.stopStreamThread = None
         self.otherAudioPorts = []
         self.ip = ip
         self.port = port
@@ -40,14 +45,10 @@ class MyClient:
             for item in self.easy.replicated_variables:
                 self.list_other_players.append(OtherPlayer((0,3.5,0)))
                 self.list_other_players[item].setPos(self.easy.replicated_variables[item].content['position'])    
-                if item != content:
-                    self.otherAudioPorts.append((self.ip, self.easy.replicated_variables[item].content['audioPort']))
+                
             self.list_other_players[content].logout()
-            print('check audio port', self.otherAudioPorts)
             
-        @self.client.event
-        def initAudioPort(content):
-            self.audioPort = int(content)
+        
             
         @self.client.event
         def newPlayerLogin(content):
@@ -55,8 +56,6 @@ class MyClient:
             # print(content)
             if content['id'] != self.player_info['id']:
                 self.list_other_players.append(OtherPlayer((0,3.5,0)))
-                self.otherAudioPorts.append((self.ip, content['port']))
-                print(self.otherAudioPorts)
  
         @self.client.event
         def newMessage(content):
@@ -84,10 +83,12 @@ class MyClient:
         
         @self.client.event
         def hearFromOtherClient(content):
-            self.openVoiceChat()
+            print(content)
+            # self.openVoiceChat()
         
         @self.client.event
         def stopHearFromOtherClient(content):
+            print(content)
             self.stopVoiceChat()
         
         @self.easy.event
@@ -176,21 +177,31 @@ class MyClient:
             self.client.send_message('updateStatus', 'stand')
             
         if key == '0':
-            self.openVoiceChat()
-            self.client.send_message('openOtherVoiceChat', 'openAll')
+            self.startStreamThread = threading.Thread(target=self.openVoiceChat)
+            self.startStreamThread.start()
                 
         if key == '9':
-            self.stopVoiceChat()
-            self.client.send_message('stopOtherVoiceChat', 'stopAll')
+            self.stopStreamThread = threading.Thread(target=self.stopVoiceChat)
+            self.stopStreamThread.start()
+            # self.startStreamThread.join()
+            # self.stopStreamThread.join()
             
     def openVoiceChat(self):
-        if not reactor.running:
-            reactor.listenUDP(self.audioPort, StreamAudio(self.otherAudioPorts))
-            reactor.run()
+        if not self.isStreaming:
+            username = self.player_info['username']
+            ip_server = self.ip
+            port_server = 4000
+            room = 1
+            self.audioStreamClient = AudioStreamClient(name=username, target_ip= ip_server, target_port= port_server, room= room)
+            self.isStreaming = True    
+        
         
     def stopVoiceChat(self):
-        if reactor.running:
-            reactor.stop()
+        if self.isStreaming:
+            self.audioStreamClient.stop_audio()
+            self.audioStreamClient.connected = False
+            self.isStreaming = False
+        
 
             
                 
