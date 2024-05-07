@@ -1,4 +1,4 @@
-<p align="center"><a href="https://drive.google.com/viewerng/viewer?url=https://drive.google.com/uc?id=1mcANfxKMmVUHu0TnDH3wYGSvY5Pz1htd">Báo cáo đồ án</a></p>
+<p align="center"><a href="https://drive.google.com/viewerng/viewer?url=https://drive.google.com/uc?id=1mcANfxKMmVUHu0TnDH3wYGSvY5Pz1htd">-->Project report<--</a></p>
 <p align="center">This's Official Website Of The Game (<a href="https://fpsonline.github.io/">https://fpsonline.github.io/</a>)</p>
 <h1 align="center">How to install and run the game</h1>
 <h1 align="center"><img src="https://github.com/Khoa-It/FPS-Online-KeyIt/assets/104067198/2bd2dbc4-70e6-49c9-bb0e-ad5f112f7d18" alt="logo" width="35%"></h1>
