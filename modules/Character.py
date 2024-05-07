@@ -31,3 +31,7 @@ class Character:
         self.running_entity.visible = False
     def getPos(self):
         return self.stand_entity.world_position
+    
+    def revival(self):
+        self.stand_entity.visible = True
+        self.running_entity.visible = True

@@ -2,9 +2,9 @@ from ursina import *
 from modules.Character import Character
 from modules.CustomHearbar import CustomHealthBar
 class OtherPlayer(Entity):
-    def __init__(self, position):
+    def __init__(self,id, position):
         self.pos = position
-        self.id = 1
+        self.id = id
         self.character = Character(position)
         self.character.stand_entity.visible = True
         self.healthbar = CustomHealthBar(3,(0,1,0))
@@ -23,6 +23,11 @@ class OtherPlayer(Entity):
     def logout(self):
         self.character.log_out()
         destroy(self.model_copy)
+    
+    def revival(self):
+        self.character.revival()
+        self.model_copy = Entity(model = 'cube', scale = (15,120,15), position = self.pos, collider = 'box')
+        self.model_copy.visible = False
         
     def running(self):
         self.character.running_entity.visible = True

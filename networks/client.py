@@ -1,3 +1,4 @@
+from turtle import position
 from ursinanetworking import *
 from ursina import *
 from modules.Bullet import Bullet
@@ -21,6 +22,7 @@ class MyClient:
         self.startStreamThread = None
         self.stopStreamThread = None
         self.otherAudioPorts = []
+        self.result = None
         self.ip = ip
         self.port = port
         self.list_other_players:list[OtherPlayer] = []
@@ -41,11 +43,17 @@ class MyClient:
         def GetID(content):
             self.player_info['id'] = content
             self.player.position = playerRandomPositions[int(content)]
+            self.nickname = Text(
+                text=f'uid: {self.player_info['id']} - {self.player_info['username']}',
+                parent = camera.ui,
+                position = Vec3(-0.15,0.42,0),
+                scale = 1.5,
+                color = color.rgb(62, 92, 176),
+                )
             self.client.send_message('updatePosition',playerRandomPositions[int(content)])
             for item in self.easy.replicated_variables:
-                self.list_other_players.append(OtherPlayer((0,3.5,0)))
+                self.list_other_players.append(OtherPlayer(item,Vec3(0,3.5,0)))
                 self.list_other_players[item].setPos(self.easy.replicated_variables[item].content['position'])    
-                
             self.list_other_players[content].logout()
             
         
@@ -55,7 +63,7 @@ class MyClient:
             # print('-------ndk log new user login-------')
             # print(content)
             if content['id'] != self.player_info['id']:
-                self.list_other_players.append(OtherPlayer((0,3.5,0)))
+                self.list_other_players.append(OtherPlayer(content['id'], Vec3(0,3.5,0)))
  
         @self.client.event
         def newMessage(content):
@@ -91,6 +99,36 @@ class MyClient:
             print(content)
             self.stopVoiceChat()
         
+        self.endGameMessage = None   
+        self.allowRestartGame = False
+        @self.client.event
+        def endGame(content):
+            print(content)
+            self.allowRestartGame = True
+            self.result = content
+            if content['id'] == self.player_info['id']:
+                self.endGameMessage = Text(
+                    text='Victory', 
+                    style = 'bold', 
+                    parent = camera.ui,
+                    position = Vec3(-0.595996, 0.136, 0),
+                    scale = Vec3(13.9, 10.6, 5),
+                    color = color.rgb(231, 245, 32),
+                    )
+                Audio('asset/static/sound_effect/victory.mp3').play()
+            else:
+                self.endGameMessage = Text(
+                    text='Defeat',  
+                    style = 'bold',
+                    parent = camera.ui,
+                    position = Vec3(-0.595996, 0.136, 0),
+                    scale = Vec3(13.9, 10.6, 5),
+                    color = color.rgb(57, 45, 89),
+                    )
+                Audio('asset/static/sound_effect/defeat.mp3').play()
+            
+                
+        
         @self.easy.event
         def onReplicatedVariableCreated(Content):
             # print('-------ndk log new syn var created-------')
@@ -115,6 +153,19 @@ class MyClient:
             # print(Content)
             pass
 
+    
+    def resetGame(self, content):
+        self.list_other_players[int(content['id'])].logout()
+        self.list_other_players = []
+        for item in self.easy.replicated_variables:
+            self.list_other_players.append(OtherPlayer(item,Vec3(0,3.5,0)))
+            self.list_other_players[int(item)].setPos(playerRandomPositions[int(item)])
+        self.list_other_players[int(self.player_info['id'])].logout()
+        if content['id'] != self.player_info['id']:
+            self.player.healthbar.value = 100
+            self.player.ndk_revival()
+        else:
+            self.player.position = playerRandomPositions[int(self.player_info['id'])]
     def updateUsername(self,name):
         self.player_info['username'] = name
         self.chatMessage.inputText.y = -.43
@@ -142,6 +193,7 @@ class MyClient:
                     print('nguoi choi bi tru mau co id:', count)
                     print('so mau con lai cua nguoi choi la:', item.healthbar.value)
                     if item.healthbar.value <= 0:
+                        self.client.send_message('checkPlayerSurvival', 'reset')
                         item.logout()
             count += 1
                             
@@ -185,6 +237,11 @@ class MyClient:
             self.stopStreamThread.start()
             # self.startStreamThread.join()
             # self.stopStreamThread.join()
+        if key == 'home':
+            if self.allowRestartGame:
+                destroy(self.endGameMessage)
+                self.resetGame(self.result)
+                self.allowRestartGame = False
             
     def openVoiceChat(self):
         if not self.isStreaming:
@@ -198,12 +255,11 @@ class MyClient:
         
     def stopVoiceChat(self):
         if self.isStreaming:
-            self.audioStreamClient.stop_audio()
-            self.audioStreamClient.connected = False
-            self.isStreaming = False
-        
-
-            
+            # self.audioStreamClient.connected = False
+            # self.audioStreamClient.stop_audio()
+            # self.isStreaming = False
+            self.startStreamThread.terminate()
+            self.stopStreamThread.terminate()
                 
     
         

@@ -16,6 +16,7 @@ class MyServer:
         self.notifycation = None
         self.notifycation_content = None
         self.audioPort = 3000
+        self.numberOfPlayers = 0
 
     def handle(self):
         if self.start_server:
@@ -27,6 +28,7 @@ class MyServer:
             @self.server.event
             def onClientConnected(Client):
                 print(f"{Client.id} join game")
+                self.numberOfPlayers += 1
                 # self.notifycation_content.text += "\n" + f"{Client.id} join game"
                 self.easy.create_replicated_variable(Client.id,
                         {"id": Client.id,
@@ -93,6 +95,13 @@ class MyServer:
                 self.server.broadcast('decrease_hp', content)
             
             @self.server.event
+            def checkPlayerSurvival(Client, content):
+                print('function checkPlayerSurvival from server')
+                self.numberOfPlayers -=1
+                if self.numberOfPlayers == 1:
+                    self.server.broadcast('endGame', {'id': Client.id})
+            
+            @self.server.event
             def openOtherVoiceChat(Client, content):
                 print(content)
                 self.server.broadcast('hearFromOtherClient', content)
@@ -118,4 +127,5 @@ class MyServer:
             self.notifycation_content.x +=.05
         if key =='space':
             print(self.notifycation_content.position)
+            
 

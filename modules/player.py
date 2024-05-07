@@ -13,7 +13,7 @@ from helpers.CustomLib import createMyCube
 
 class Player(FirstPersonController):
     def __init__(self, position, clientCallback, ignorePosition):
-        
+        self.ndk_death_message = None
         self.character = Character(position)
         self.modController = 1
         self.clientCallback = clientCallback
@@ -141,12 +141,15 @@ class Player(FirstPersonController):
 
 
     def ndk_death(self):
-        self.cursor.color = color.rgb(0, 0, 0, a=0)  # Ẩn con trỏ
         for gun in self.gun:
             gun.disable()  # Ẩn súng
         self.disable()  # Tắt bộ điều khiển
-        Text(text="You are dead!", origin=Vec2(0, 0), scale=3)  # Hiển thị thông báo
+        self.ndk_death_message = Text(text="You are dead!", origin=Vec2(0, 0), scale=3)  # Hiển thị thông báo
 
+    def ndk_revival(self):
+        self.ndk_switch_mode(1)
+        self.enable()
+        destroy(self.ndk_death_message)
 
     def ndk_switch_mode(self, controllerMode):
         if controllerMode == 3:
