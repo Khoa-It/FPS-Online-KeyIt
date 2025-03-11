@@ -247,7 +247,6 @@ class MyClient:
                 self.chatMessage.inputText.active=False
                 self.player.enable()
         if held_keys['a'] or held_keys['s'] or held_keys['d'] or held_keys['w']:
-            print(f"Gửi vị trí mới: {self.player.model.world_position}")  # Debug
             self.client.send_message('updatePosition',self.player.model.world_position)
             self.client.send_message('updateRotation', self.player.model.world_rotation)
             self.client.send_message('updateStatus', 'running')
