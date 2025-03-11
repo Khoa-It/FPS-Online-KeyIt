@@ -2,9 +2,9 @@ from bson import ObjectId
 from pymongo import MongoClient
 
 # Thay thế các giá trị này bằng thông tin kết nối thực tế từ MongoDB Cloud của bạn
-username = 'khoa'
-password = 'Q0DFLZB2wxsLy9Si'
-cluster_url = 'cluster0.rzbbz4l.mongodb.net'
+username = 'admin_gamebansung'
+password = 'admin134'
+cluster_url = 'cluster0.ba6xpv6.mongodb.net'
 database_name = 'FPS_Game'
 
 # Tạo URL kết nối MongoDB
@@ -20,13 +20,13 @@ db = client[database_name]
 collection = db['server']
 
 def getIpServer():    
-    ipServer = collection.find_one({'_id': ObjectId('663336ecee3883f3f45e12e2')})
+    ipServer = collection.find_one({'_id': ObjectId('67d050474fb03c8bcd630f6b')})
     print('ipServer', ipServer)
     print(ipServer['ip'])
     return ipServer['ip']
 
 def setIpServer(ipServer):
-    collection.update_one({'_id': ObjectId('663336ecee3883f3f45e12e2')}, {'$set': {'ip': str(ipServer)}})
+    collection.update_one({'_id': ObjectId('67d050474fb03c8bcd630f6b')}, {'$set': {'ip': str(ipServer)}})
 
 
 

@@ -37,7 +37,7 @@ class Player(FirstPersonController):
         self.walksound.volume = 0
         self.walksound.autoplay = True
         self.bullet = None
-        self.cursor.color = color.rgb(255, 0, 0, 122)
+        self.cursor.color = color.rgba(255, 0, 0, 122)
         self.ak47 = Entity(parent=camera,
                            model='asset/static/gun/G32SMGModel.fbx',
                            texture='asset/static/gun/gun_blue_violet_texture.png',

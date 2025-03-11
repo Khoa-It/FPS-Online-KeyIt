@@ -1,0 +1,6 @@
+ursina
+ursinanetworking
+twisted
+pyaudio
+bson
+pymongo
