@@ -73,6 +73,10 @@ class MyServer:
                 Client.send_message('updatePosition', start_position)  # Gửi vị trí mới về client
                 Client.send_message('initAudioPort', self.audioPort)
 
+                # Gửi toàn bộ danh sách người chơi hiện tại cho client mới
+                for player_id, data in self.easy.replicated_variables.items():
+                    Client.send_message('newPlayerLogin', data)
+
                 self.server.broadcast('newPlayerLogin',
                     {
                         'id': Client.id,

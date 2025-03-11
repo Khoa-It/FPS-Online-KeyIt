@@ -61,12 +61,32 @@ class MyClient:
             
         
             
+        # @self.client.event
+        # def newPlayerLogin(content):
+        #     # print('-------ndk log new user login-------')
+        #     # print(content)
+        #     if content['id'] != self.player_info['id']:
+        #         self.list_other_players.append(OtherPlayer(content['id'], Vec3(0,3.5,0)))
+
         @self.client.event
-        def newPlayerLogin(content):
-            # print('-------ndk log new user login-------')
-            # print(content)
-            if content['id'] != self.player_info['id']:
-                self.list_other_players.append(OtherPlayer(content['id'], Vec3(0,3.5,0)))
+        def newPlayerLogin(data):
+            player_id = data['id']
+            position = data['position']
+
+            if player_id in self.list_other_players:
+                print(f"⚠️ Người chơi {player_id} đã tồn tại!")
+                return
+
+            # Kiểm tra nếu dữ liệu hợp lệ
+            if position is None:
+                print(f"❌ Lỗi: Dữ liệu vị trí của {player_id} không hợp lệ!")
+                return
+
+            # Tạo người chơi mới
+            new_player = OtherPlayer(player_id, position)
+            self.list_other_players[player_id] = new_player  
+
+            print(f"✅ Đã tạo người chơi mới: {player_id} tại vị trí {position}")
  
         @self.client.event
         def newMessage(content):
