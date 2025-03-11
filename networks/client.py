@@ -51,9 +51,12 @@ class MyClient:
                 color = color.rgb(62, 92, 176),
                 )
             self.client.send_message('updatePosition',playerRandomPositions[int(content)])
+        # Cập nhật danh sách người chơi khác
             for item in self.easy.replicated_variables:
-                self.list_other_players.append(OtherPlayer(item,Vec3(0,3.5,0)))
-                self.list_other_players[item].setPos(self.easy.replicated_variables[item].content['position'])    
+                if int(item) != self.player_info['id']:  # Không tạo model trùng với chính mình
+                    other_player = OtherPlayer(item, Vec3(0, 3.5, 0))
+                    other_player.setPos(self.easy.replicated_variables[item].content['position'])
+                    self.list_other_players.append(other_player)   
             self.list_other_players[content].logout()
             
         

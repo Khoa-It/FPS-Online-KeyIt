@@ -2,6 +2,7 @@ from ursinanetworking import easyursinanetworking
 from ursinanetworking import *
 from twisted.internet.protocol import DatagramProtocol
 import pyaudio
+from data.RandomPosition import playerRandomPositions
 # server = UrsinaNetworkingServer('192.168.167.238', 6000)
 class MyServer:
     def __init__(self, ip, port):
@@ -25,30 +26,62 @@ class MyServer:
             # self.notifycation = Text(f"this is server with ip address: {self.ip}", position=Vec3(-0.25, 0.45, 0))
             # self.notifycation_content = Text("=========Log content============", position=Vec3(-0.85, 0.4, 0))
 
+            # @self.server.event
+            # def onClientConnected(Client):
+            #     print(f"{Client.id} join game")
+            #     self.numberOfPlayers += 1
+            #     # self.notifycation_content.text += "\n" + f"{Client.id} join game"
+            #     self.easy.create_replicated_variable(Client.id,
+            #             {"id": Client.id,
+            #              'position': (0,3.5,0),
+            #              'rotation': (0,0,0),
+            #              'status': 'stand',
+            #              'audioPort': self.audioPort,
+            #              }
+            #              )
+            #     Client.send_message('GetID', Client.id)
+            #     Client.send_message('initAudioPort', self.audioPort)
+            #     self.server.broadcast('newPlayerLogin',
+            #         {
+            #             'id':Client.id,
+            #             'name':Client.name,
+            #             'position':(0,3.5,0),
+            #             'port': self.audioPort,
+            #         }
+            #     )
+            #     Client.send_message('syncMessage',self.messages)
+            #     self.audioPort += 1
+            #     print('check easy', self.easy.replicated_variables)
+
             @self.server.event
             def onClientConnected(Client):
                 print(f"{Client.id} join game")
                 self.numberOfPlayers += 1
-                # self.notifycation_content.text += "\n" + f"{Client.id} join game"
+                
+                start_position = playerRandomPositions[Client.id]  # Gán vị trí ngẫu nhiên dựa vào ID
+
                 self.easy.create_replicated_variable(Client.id,
-                        {"id": Client.id,
-                         'position': (0,3.5,0),
-                         'rotation': (0,0,0),
-                         'status': 'stand',
-                         'audioPort': self.audioPort,
-                         }
-                         )
-                Client.send_message('GetID', Client.id)
+                    {
+                        "id": Client.id,
+                        'position': start_position,  # Cập nhật vị trí mới
+                        'rotation': (0,0,0),
+                        'status': 'stand',
+                        'audioPort': self.audioPort,
+                    }
+                )
+                Client.send_message('GetID', Client.id)  # Gửi ID về client
+                Client.send_message('updatePosition', start_position)  # Gửi vị trí mới về client
                 Client.send_message('initAudioPort', self.audioPort)
+
                 self.server.broadcast('newPlayerLogin',
                     {
-                        'id':Client.id,
-                        'name':Client.name,
-                        'position':(0,3.5,0),
+                        'id': Client.id,
+                        'name': Client.name,
+                        'position': start_position,
                         'port': self.audioPort,
                     }
                 )
-                Client.send_message('syncMessage',self.messages)
+                Client.send_message('syncMessage', self.messages)
                 self.audioPort += 1
                 print('check easy', self.easy.replicated_variables)
 
