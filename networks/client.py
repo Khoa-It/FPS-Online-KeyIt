@@ -143,6 +143,7 @@ class MyClient:
             # print('-------ndk log one syn var updated-------')
             # print(Content)
             if Content.content['id'] != self.player_info['id']:
+                print(f"Nhận vị trí mới từ server: {Content.content['id']} - {Content.content['position']}")
                 self.list_other_players[Content.content['id']].setPos(Content.content['position'])
                 self.list_other_players[Content.content['id']].setRot(Content.content['rotation'])
                 if Content.content['status'] == 'stand':
@@ -225,6 +226,7 @@ class MyClient:
                 self.chatMessage.inputText.active=False
                 self.player.enable()
         if held_keys['a'] or held_keys['s'] or held_keys['d'] or held_keys['w']:
+            print(f"Gửi vị trí mới: {self.player.model.world_position}")  # Debug
             self.client.send_message('updatePosition',self.player.model.world_position)
             self.client.send_message('updateRotation', self.player.model.world_rotation)
             self.client.send_message('updateStatus', 'running')
