@@ -138,18 +138,39 @@ class MyClient:
             # print(Content)
             pass
         
+        # @self.easy.event
+        # def onReplicatedVariableUpdated(Content):
+        #     # print('-------ndk log one syn var updated-------')
+        #     # print(Content)
+        #     if Content.content['id'] != self.player_info['id']:
+        #         print(f"Nhận vị trí mới từ server: {Content.content['id']} - {Content.content['position']}")
+        #         self.list_other_players[Content.content['id']].setPos(Content.content['position'])
+        #         self.list_other_players[Content.content['id']].setRot(Content.content['rotation'])
+        #         if Content.content['status'] == 'stand':
+        #             self.list_other_players[Content.content['id']].stand()
+        #         else:
+        #             self.list_other_players[Content.content['id']].running()
+
         @self.easy.event
         def onReplicatedVariableUpdated(Content):
-            # print('-------ndk log one syn var updated-------')
-            # print(Content)
-            if Content.content['id'] != self.player_info['id']:
-                print(f"Nhận vị trí mới từ server: {Content.content['id']} - {Content.content['position']}")
-                self.list_other_players[Content.content['id']].setPos(Content.content['position'])
-                self.list_other_players[Content.content['id']].setRot(Content.content['rotation'])
-                if Content.content['status'] == 'stand':
-                    self.list_other_players[Content.content['id']].stand()
-                else:
-                    self.list_other_players[Content.content['id']].running()
+            player_id = Content.content['id']
+            
+            # Kiểm tra xem player_id có trong danh sách chưa
+            if player_id not in self.list_other_players:
+                print(f"⚠️ ID {player_id} chưa tồn tại trong danh sách! Tạo mới...")
+                self.list_other_players[player_id] = OtherPlayer(player_id, Vec3(0,3.5,0))
+
+            print(f"Nhận vị trí mới từ server: {player_id} - {Content.content['position']}")
+
+            # Cập nhật vị trí, xoay và trạng thái
+            self.list_other_players[player_id].setPos(Content.content['position'])
+            self.list_other_players[player_id].setRot(Content.content['rotation'])
+            
+            if Content.content['status'] == 'stand':
+                self.list_other_players[player_id].stand()
+            else:
+                self.list_other_players[player_id].running()
+
      
         @self.easy.event
         def onReplicatedVariableRemoved(Content):    
